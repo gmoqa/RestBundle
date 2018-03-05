@@ -29,23 +29,12 @@ final class MakeResource extends AbstractMaker
         $command
             ->setDescription('Creates multiple classes for a Resource')
             ->addArgument('resource-name', InputArgument::OPTIONAL, 'The resource name (e.g. <fg=yellow>post</>)')
-            ->addArgument('custom-namespace', InputArgument::OPTIONAL, 'A root namespace where to create everything (e.g. <fg=yellow>App</>)')
             ->setHelp(file_get_contents(__DIR__.'/../Resources/help/MakeResource.txt'))
         ;
     }
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-        $rootNamespace = $input->getArgument('custom-namespace');
-        if ($rootNamespace !== 'App') {
-            // Some reflection hooking for easing work with other Symfony Versions.
-            $generatorRefl = new \ReflectionClass($generator);
-            $reflProp = $generatorRefl->getProperty('namespacePrefix');
-            $reflProp->setAccessible(true);
-            $reflProp->setValue($generator, $rootNamespace);
-            $reflProp->setAccessible(false);
-        }
-
         $resourceName = strtolower($input->getArgument('resource-name'));
         $resourceNamePlural = Inflector::pluralize($resourceName);
         $baseName = Str::asClassName($resourceName);
