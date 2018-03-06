@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Filter;
+namespace MNC\Bundle\RestBundle\Filter;
 
 class Filter implements FilterInterface
 {

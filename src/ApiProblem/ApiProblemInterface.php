@@ -1,10 +1,10 @@
 <?php
 
-namespace MNC\RestBundle\ApiProblem;
+namespace MNC\Bundle\RestBundle\ApiProblem;
 
 /**
  * Interface ApiProblemInterface
- * @package MNC\RestBundle\ApiProblem
+ * @package MNC\Bundle\RestBundle\ApiProblem
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 interface ApiProblemInterface

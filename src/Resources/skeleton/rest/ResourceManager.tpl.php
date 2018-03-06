@@ -4,7 +4,7 @@ namespace <?= $namespace; ?>;
 
 use <?= $repository_full_class_name;?>;
 use Doctrine\ORM\EntityManagerInterface;
-use MNC\RestBundle\Manager\AbstractResourceManager;
+use MNC\Bundle\RestBundle\Manager\AbstractResourceManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class <?= $class_name; ?> extends AbstractResourceManager

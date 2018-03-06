@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Annotations;
+namespace MNC\Bundle\RestBundle\Annotations;
 
 
 use Doctrine\Common\Annotations\Annotation\Required;

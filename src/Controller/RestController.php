@@ -1,21 +1,21 @@
 <?php
 
-namespace MNC\RestBundle\Controller;
+namespace MNC\Bundle\RestBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use League\Fractal\TransformerAbstract;
 use MNC\AgileBundle\ObjectManager\AbstractObjectManager;
-use MNC\RestBundle\ApiProblem\ApiError;
-use MNC\RestBundle\ApiProblem\ApiProblem;
-use MNC\RestBundle\ApiProblem\ApiProblemException;
-use MNC\RestBundle\Fractalizer\Fractalizer;
-use MNC\RestBundle\Helper\RestInfo;
-use MNC\RestBundle\Helper\RestInfoInterface;
-use MNC\RestBundle\Helper\RouteActionVerb;
-use MNC\RestBundle\Manager\AbstractResourceManager;
-use MNC\RestBundle\Security\OwnableResourceVoter;
+use MNC\Bundle\RestBundle\ApiProblem\ApiError;
+use MNC\Bundle\RestBundle\ApiProblem\ApiProblem;
+use MNC\Bundle\RestBundle\ApiProblem\ApiProblemException;
+use MNC\Bundle\RestBundle\Fractalizer\Fractalizer;
+use MNC\Bundle\RestBundle\Helper\RestInfo;
+use MNC\Bundle\RestBundle\Helper\RestInfoInterface;
+use MNC\Bundle\RestBundle\Helper\RouteActionVerb;
+use MNC\Bundle\RestBundle\Manager\AbstractResourceManager;
+use MNC\Bundle\RestBundle\Security\OwnableResourceVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

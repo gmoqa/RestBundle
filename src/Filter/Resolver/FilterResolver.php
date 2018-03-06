@@ -1,11 +1,11 @@
 <?php
 
-namespace MNC\RestBundle\Filter\Resolver;
-use MNC\RestBundle\Filter\FilterInterface;
+namespace MNC\Bundle\RestBundle\Filter\Resolver;
+use MNC\Bundle\RestBundle\Filter\FilterInterface;
 
 /**
  * Class FilterResolver
- * @package MNC\RestBundle\Filter\Resolver
+ * @package MNC\Bundle\RestBundle\Filter\Resolver
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class FilterResolver implements FilterResolverInterface

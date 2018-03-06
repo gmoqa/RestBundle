@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Doctrine\Fixtures;
+namespace MNC\Bundle\RestBundle\Doctrine\Fixtures;
 
 /**
  * Class AdvancedFixtureException

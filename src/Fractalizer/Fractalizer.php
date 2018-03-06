@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Fractalizer;
+namespace MNC\Bundle\RestBundle\Fractalizer;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
@@ -10,7 +10,7 @@ use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
-use MNC\RestBundle\Helper\RestInfoInterface;
+use MNC\Bundle\RestBundle\Helper\RestInfoInterface;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;

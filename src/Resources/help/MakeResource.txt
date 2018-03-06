@@ -1,6 +1,6 @@
 The <info>%command.name%</info> command generates a new Resource.
 
-<info>php %command.full_name% Post</info>
+<info>php %command.full_name% post</info>
 
 If the argument is missing, the command will ask for the resource name interactively.
 
@@ -11,3 +11,4 @@ This command will create the following:
     - A Transformer class
     - A Form class
     - A Controller class
+    - A Fixture class

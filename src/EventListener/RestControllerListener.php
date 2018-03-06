@@ -1,14 +1,14 @@
 <?php
 
-namespace MNC\RestBundle\EventListener;
+namespace MNC\Bundle\RestBundle\EventListener;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
-use MNC\RestBundle\Annotations\Resource;
-use MNC\RestBundle\Annotations\UriIdentifier;
-use MNC\RestBundle\Helper\RestInfo;
-use MNC\RestBundle\Helper\RouteActionVerb;
-use MNC\RestBundle\Controller\RestController;
+use MNC\Bundle\RestBundle\Annotations\Resource;
+use MNC\Bundle\RestBundle\Annotations\UriIdentifier;
+use MNC\Bundle\RestBundle\Helper\RestInfo;
+use MNC\Bundle\RestBundle\Helper\RouteActionVerb;
+use MNC\Bundle\RestBundle\Controller\RestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -16,18 +16,18 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 /**
  * This Listener checks wether a Controller is tagged with the @Resource
- * annotation. Also checks if this controller extends MNC\RestBundle\Controller\RestController
+ * annotation. Also checks if this controller extends MNC\Bundle\RestBundle\Controller\RestController
  * If so, sets the controller to work with the annotation options, leveraging all
  * the power of the annotation.
  *
- * @package MNC\RestBundle
+ * @package MNC\Bundle\RestBundle
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class RestControllerListener
 {
-    const RESOURCE_ANNOT = 'MNC\RestBundle\Annotations\Resource';
-    const IDENTIFIER_ANNOT = 'MNC\RestBundle\Annotations\UriIdentifier';
-    const MANAGER_ANNOT = 'MNC\RestBundle\Annotations\ResourceManager';
+    const RESOURCE_ANNOT = 'MNC\Bundle\RestBundle\Annotations\Resource';
+    const IDENTIFIER_ANNOT = 'MNC\Bundle\RestBundle\Annotations\UriIdentifier';
+    const MANAGER_ANNOT = 'MNC\Bundle\RestBundle\Annotations\ResourceManager';
 
     /**
      * @var Reader

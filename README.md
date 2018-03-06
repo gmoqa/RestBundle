@@ -2,7 +2,8 @@ MNC RestBundle
 ==============
 Provides some utilties to rapidly build Restful API's.
 
-> This library is not ready for release yet. Do not use in production!
+> This bundle is only compatible with Symfony 4. We are working to make it compatible
+for other LTS versions of Symfony.
 
 You can check the documentation [here](/src/Resources/docs/0.intro.md), but frist
 familiarize yourself with this readme.
@@ -30,45 +31,18 @@ Simply run:
 
     composer require mnavarrocarter/rest-bundle
    
-Then register the bundle in your kernel:
+Then register the bundle in your `bundles.php`:
 
-    // app/AppKernel.php
+    // config/bundles.php
     
-    class AppKernel extends Kernel
-    {
-        public function registerBundles()
-        {
-            $bundles = array(
-                // ...
+    <?php
     
-                new MNC\RestBundle\MNCRestBundle(),
-            );
-    
-            // ...
-        }
-    
+    return [
         // ...
-    } 
+        MNC\Bundle\RestBundle\MNCRestBundle::class => ['all' => true],
+    ];
 
 ## Configuration
-
-### Symfony Translator
-There's an issue using Symfony 4.0. Before using this package you need to install the translation
-component. You can do this with:
-
-    composer req translator
-
-Flex will take care of everything.
-
-### Route Loading
-There's no need for a custom route loader like the one in FOSRestBundle. Simply load your
-Api Controllers with the following config, and your routes will have consistent names:
-
-    api:
-        resource: "@ApiBundle/Controller/"
-        prefix: /api
-        defaults:
-            _format: json
 
 ### Access Desition Manager
 If you are going to extend the `RestController` in your controllers, then you should
@@ -89,6 +63,19 @@ To solve this, we recommend you the following configuration in your security con
             allow_if_all_abstain: true
 
 ## Usage
+
+First, create a resource:
+
+    php bin/console make:resource post
+
+Then, configure your entity.
+
+Then, configure the fixtures.
+
+Update your database.
+
+Go to some endpoint to fecth resources.
+
 To get a deep understanding on how this bundle works, read [the docs](/src/Resources/docs/0.intro.md).
 
 ## Credits

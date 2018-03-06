@@ -1,10 +1,10 @@
 <?php
 
-namespace MNC\RestBundle;
+namespace MNC\Bundle\RestBundle;
 
-use MNC\RestBundle\DependencyInjection\Compiler\ExtensionCompilerPass;
-use MNC\RestBundle\DependencyInjection\Compiler\PublicServicesCompilerPass;
-use MNC\RestBundle\DependencyInjection\Compiler\TransformerCompilerPass;
+use MNC\Bundle\RestBundle\DependencyInjection\Compiler\ExtensionCompilerPass;
+use MNC\Bundle\RestBundle\DependencyInjection\Compiler\PublicServicesCompilerPass;
+use MNC\Bundle\RestBundle\DependencyInjection\Compiler\TransformerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

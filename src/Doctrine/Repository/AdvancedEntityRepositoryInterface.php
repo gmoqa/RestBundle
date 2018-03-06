@@ -1,12 +1,12 @@
 <?php
 
-namespace MNC\RestBundle\Doctrine\Repository;
+namespace MNC\Bundle\RestBundle\Doctrine\Repository;
 
 use Doctrine\ORM\QueryBuilder;
 
 /**
  * Interface AdvancedEntityRepositoryInterface
- * @package MNC\RestBundle\Doctrine\Repository
+ * @package MNC\Bundle\RestBundle\Doctrine\Repository
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 interface AdvancedEntityRepositoryInterface

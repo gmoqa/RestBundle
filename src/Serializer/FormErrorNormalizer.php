@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Serializer;
+namespace MNC\Bundle\RestBundle\Serializer;
 
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Doctrine\Repository;
+namespace MNC\Bundle\RestBundle\Doctrine\Repository;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,7 +10,7 @@ use Doctrine\ORM\QueryBuilder;
 
 /**
  * An Eloquent-Like API for Symfony's query builder.
- * @package MNC\RestBundle\Doctrine\Repository
+ * @package MNC\Bundle\RestBundle\Doctrine\Repository
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 abstract class AdvancedEntityRepository extends EntityRepository implements AdvancedEntityRepositoryInterface

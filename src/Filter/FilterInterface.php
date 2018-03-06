@@ -1,10 +1,10 @@
 <?php
 
-namespace MNC\RestBundle\Filter;
+namespace MNC\Bundle\RestBundle\Filter;
 
 /**
  * Class FilterInterface
- * @package MNC\RestBundle\Filter
+ * @package MNC\Bundle\RestBundle\Filter
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 interface FilterInterface

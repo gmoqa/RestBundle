@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Security;
+namespace MNC\Bundle\RestBundle\Security;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 

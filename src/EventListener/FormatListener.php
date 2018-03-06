@@ -1,11 +1,11 @@
 <?php
 
-namespace MNC\RestBundle\EventListener;
+namespace MNC\Bundle\RestBundle\EventListener;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
  * Class FormatListener
- * @package MNC\RestBundle\EventListener
+ * @package MNC\Bundle\RestBundle\EventListener
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class FormatListener

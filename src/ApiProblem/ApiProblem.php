@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\ApiProblem;
+namespace MNC\Bundle\RestBundle\ApiProblem;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * This class in an implementation of RFC-7807, modeling an ApiProblem.
  * @docs https://www.rfc-editor.org/rfc/rfc7807.txt
- * @package MNC\RestBundle\ApiProblem
+ * @package MNC\Bundle\RestBundle\ApiProblem
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class ApiProblem implements ApiProblemInterface

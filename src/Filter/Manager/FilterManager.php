@@ -1,14 +1,14 @@
 <?php
 
-namespace MNC\RestBundle\Filter\Manager;
+namespace MNC\Bundle\RestBundle\Filter\Manager;
 
-use MNC\RestBundle\Filter\FilterInterface;
-use MNC\RestBundle\Filter\QBFilter;
-use MNC\RestBundle\Filter\Resolver\FilterResolverInterface;
+use MNC\Bundle\RestBundle\Filter\FilterInterface;
+use MNC\Bundle\RestBundle\Filter\QBFilter;
+use MNC\Bundle\RestBundle\Filter\Resolver\FilterResolverInterface;
 
 /**
  * Class FilterManager
- * @package MNC\RestBundle\Filter\Manager
+ * @package MNC\Bundle\RestBundle\Filter\Manager
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class FilterManager implements FilterManagerInterface

@@ -1,11 +1,11 @@
 <?php
 
-namespace MNC\RestBundle\Filter;
+namespace MNC\Bundle\RestBundle\Filter;
 use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class QBFilter
- * @package MNC\RestBundle\Filter
+ * @package MNC\Bundle\RestBundle\Filter
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class QBFilter extends Filter

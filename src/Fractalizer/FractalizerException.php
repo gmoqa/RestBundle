@@ -1,12 +1,12 @@
 <?php
 
-namespace MNC\RestBundle\Fractalizer;
+namespace MNC\Bundle\RestBundle\Fractalizer;
 
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 /**
  * Class FractalizerException
- * @package MNC\RestBundle\Fractalizer
+ * @package MNC\Bundle\RestBundle\Fractalizer
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class FractalizerException extends Exception

@@ -1,12 +1,12 @@
 <?php
 
-namespace MNC\RestBundle\Filter\Manager;
+namespace MNC\Bundle\RestBundle\Filter\Manager;
 
-use MNC\RestBundle\Filter\FilterInterface;
+use MNC\Bundle\RestBundle\Filter\FilterInterface;
 
 /**
  * Interface FilterManagerInterface
- * @package MNC\RestBundle\Filter\Manager
+ * @package MNC\Bundle\RestBundle\Filter\Manager
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 interface FilterManagerInterface

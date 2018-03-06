@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Fractalizer;
+namespace MNC\Bundle\RestBundle\Fractalizer;
 
 use League\Fractal\Scope;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;

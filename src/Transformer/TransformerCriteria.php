@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Transformer;
+namespace MNC\Bundle\RestBundle\Transformer;
 use Doctrine\Common\Collections\Criteria;
 use League\Fractal\ParamBag;
 

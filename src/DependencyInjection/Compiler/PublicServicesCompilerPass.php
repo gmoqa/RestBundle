@@ -1,15 +1,15 @@
 <?php
 
-namespace MNC\RestBundle\DependencyInjection\Compiler;
+namespace MNC\Bundle\RestBundle\DependencyInjection\Compiler;
 
 use Limenius\Liform\Transformer\TransformerInterface;
-use MNC\RestBundle\Manager\ResourceManagerInterface;
+use MNC\Bundle\RestBundle\Manager\ResourceManagerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Class PublicServicesCompilerPass
- * @package MNC\RestBundle\DependencyInjection\Compiler
+ * @package MNC\Bundle\RestBundle\DependencyInjection\Compiler
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class PublicServicesCompilerPass implements CompilerPassInterface

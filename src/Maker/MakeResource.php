@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Maker;
+namespace MNC\Bundle\RestBundle\Maker;
 
 use Doctrine\Common\Util\Inflector;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;

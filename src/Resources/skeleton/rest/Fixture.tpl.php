@@ -2,7 +2,7 @@
 
 namespace <?= $namespace; ?>;
 
-use MNC\RestBundle\Doctrine\Fixtures\AdvancedFixture;
+use MNC\Bundle\RestBundle\Doctrine\Fixtures\AdvancedFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use <?= $entity_full_class_name; ?>;
 use Faker\Generator;

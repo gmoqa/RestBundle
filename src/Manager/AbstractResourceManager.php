@@ -1,16 +1,16 @@
 <?php
 
-namespace MNC\RestBundle\Manager;
+namespace MNC\Bundle\RestBundle\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
-use MNC\RestBundle\Helper\RestInfo;
-use MNC\RestBundle\Helper\RestInfoInterface;
+use MNC\Bundle\RestBundle\Helper\RestInfo;
+use MNC\Bundle\RestBundle\Helper\RestInfoInterface;
 
 /**
  * This class is a Wrapper of the original EntityManager. It makes some of it's
  * methods a little bit less verbose.
- * @package MNC\RestBundle\Manager
+ * @package MNC\Bundle\RestBundle\Manager
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 abstract class AbstractResourceManager implements ResourceManagerInterface

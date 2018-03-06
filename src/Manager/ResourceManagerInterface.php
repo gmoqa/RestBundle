@@ -1,19 +1,19 @@
 <?php
 
-namespace MNC\RestBundle\Manager;
+namespace MNC\Bundle\RestBundle\Manager;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\QueryBuilder;
-use MNC\RestBundle\Helper\RestInfoInterface;
+use MNC\Bundle\RestBundle\Helper\RestInfoInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Interface ResourceManagerInterface
- * @package MNC\RestBundle\Manager
+ * @package MNC\Bundle\RestBundle\Manager
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 interface ResourceManagerInterface extends ObjectManager

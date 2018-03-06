@@ -1,13 +1,13 @@
 <?php
 
-namespace MNC\RestBundle\Annotations;
+namespace MNC\Bundle\RestBundle\Annotations;
 
 use Doctrine\Common\Annotations\Annotation\Required;
 use Doctrine\Common\Annotations\Annotation\Target;
 
 /**
  * This class holds data for the link annotation.
- * @package MNC\RestBundle\Annotations
+ * @package MNC\Bundle\RestBundle\Annotations
  * @author Matías Navarro Carter <mnavarro@option.cl>
  * @Annotation
  * @Target("CLASS")

@@ -1,15 +1,15 @@
 <?php
 
-namespace MNC\RestBundle\Helper;
+namespace MNC\Bundle\RestBundle\Helper;
 
 use Doctrine\Common\Inflector\Inflector;
 use League\Fractal\TransformerAbstract;
-use MNC\RestBundle\Manager\AbstractResourceManager;
+use MNC\Bundle\RestBundle\Manager\AbstractResourceManager;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * This class provides a reliable interface for storing RestInfo.
- * @package MNC\RestBundle\Helper
+ * @package MNC\Bundle\RestBundle\Helper
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class RestInfo implements RestInfoInterface

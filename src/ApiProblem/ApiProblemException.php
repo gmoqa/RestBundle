@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\ApiProblem;
+namespace MNC\Bundle\RestBundle\ApiProblem;
 
 
 use Symfony\Component\HttpKernel\Exception\HttpException;

@@ -1,14 +1,14 @@
 <?php
 
-namespace MNC\RestBundle\EventListener;
+namespace MNC\Bundle\RestBundle\EventListener;
 
-use MNC\RestBundle\ApiProblem\ApiError;
-use MNC\RestBundle\ApiProblem\ApiProblem;
+use MNC\Bundle\RestBundle\ApiProblem\ApiError;
+use MNC\Bundle\RestBundle\ApiProblem\ApiProblem;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
  * Class RequestBodyListener
- * @package MNC\RestBundle\EventListener
+ * @package MNC\Bundle\RestBundle\EventListener
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class RequestBodyListener

@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Helper;
+namespace MNC\Bundle\RestBundle\Helper;
 
 
 class RouteActionVerb

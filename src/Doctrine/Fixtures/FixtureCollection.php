@@ -1,10 +1,10 @@
 <?php
 
-namespace MNC\RestBundle\Doctrine\Fixtures;
+namespace MNC\Bundle\RestBundle\Doctrine\Fixtures;
 
 /**
  * Class FixtureCollection
- * @package MNC\RestBundle\Doctrine\Fixtures
+ * @package MNC\Bundle\RestBundle\Doctrine\Fixtures
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class FixtureCollection implements FixtureCollectionInterface, \IteratorAggregate

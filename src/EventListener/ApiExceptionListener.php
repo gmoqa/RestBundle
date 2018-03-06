@@ -1,11 +1,11 @@
 <?php
 
-namespace MNC\RestBundle\EventListener;
+namespace MNC\Bundle\RestBundle\EventListener;
 
 use Doctrine\DBAL\Exception\DriverException;
-use MNC\RestBundle\ApiProblem\ApiError;
-use MNC\RestBundle\ApiProblem\ApiProblem;
-use MNC\RestBundle\ApiProblem\ApiProblemException;
+use MNC\Bundle\RestBundle\ApiProblem\ApiError;
+use MNC\Bundle\RestBundle\ApiProblem\ApiProblem;
+use MNC\Bundle\RestBundle\ApiProblem\ApiProblemException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  * firewall and formatting it in a consistent way. The format for errors used is
  * the one defined in RFC7807: Problem Details for HTTP APIs.
  *
- * @package MNC\RestBundle\EventListener
+ * @package MNC\Bundle\RestBundle\EventListener
  * @author Matías Navarro Carter <mnavarro@option.cl>
  * @docs https://tools.ietf.org/html/rfc7807
  */

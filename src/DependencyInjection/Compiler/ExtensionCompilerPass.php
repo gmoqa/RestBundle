@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\DependencyInjection\Compiler;
+namespace MNC\Bundle\RestBundle\DependencyInjection\Compiler;
 
 use Limenius\Liform\Transformer\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

@@ -7,25 +7,25 @@ services:
             public: false
 
     # EVENT LISTENERS
-    MNC\RestBundle\EventListener\ApiExceptionListener:
+    MNC\Bundle\RestBundle\EventListener\ApiExceptionListener:
         arguments: ['%kernel.environment%']
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
 
-    MNC\RestBundle\EventListener\RequestBodyListener:
+    MNC\Bundle\RestBundle\EventListener\RequestBodyListener:
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: 150 }
 
-    MNC\RestBundle\EventListener\FormatListener:
+    MNC\Bundle\RestBundle\EventListener\FormatListener:
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: -40 }
 
-    MNC\RestBundle\EventListener\RestControllerListener:
+    MNC\Bundle\RestBundle\EventListener\RestControllerListener:
         tags:
             - { name: kernel.event_listener, event: kernel.controller }
 
     # MAKERS
-    MNC\RestBundle\Maker\MakeResource:
+    MNC\Bundle\RestBundle\Maker\MakeResource:
         tags:
             - { name: maker.command }
 
@@ -60,19 +60,19 @@ services:
         arguments: ['@validator.mapping.class_metadata_factory']
 
     # VOTERS
-    MNC\RestBundle\Security\OwnableResourceVoter:
+    MNC\Bundle\RestBundle\Security\OwnableResourceVoter:
         tags:
             - { name: security.voter }
 
     # SERVICES
-    MNC\RestBundle\Fractalizer\Fractalizer:
+    MNC\Bundle\RestBundle\Fractalizer\Fractalizer:
         arguments:
             - '@Symfony\Component\HttpFoundation\RequestStack'
             - '@router'
-            - '@MNC\RestBundle\Fractalizer\ContainerAwareManager'
+            - '@MNC\Bundle\RestBundle\Fractalizer\ContainerAwareManager'
         public: true
 
-    MNC\RestBundle\Fractalizer\ContainerAwareManager:
+    MNC\Bundle\RestBundle\Fractalizer\ContainerAwareManager:
         public: true
         calls:
             - [setContainer, ['@service_container']]

@@ -1,13 +1,13 @@
 <?php
 
-namespace MNC\RestBundle\Controller;
+namespace MNC\Bundle\RestBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 /**
  * Trait NoNewActionTrait
- * @package MNC\RestBundle\Controller
+ * @package MNC\Bundle\RestBundle\Controller
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 trait NoNewActionTrait

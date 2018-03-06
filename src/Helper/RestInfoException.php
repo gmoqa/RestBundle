@@ -1,10 +1,10 @@
 <?php
 
-namespace MNC\RestBundle\Helper;
+namespace MNC\Bundle\RestBundle\Helper;
 
 /**
  * Class RestInfoException
- * @package MNC\RestBundle\Helper
+ * @package MNC\Bundle\RestBundle\Helper
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class RestInfoException extends \Exception

@@ -3,9 +3,9 @@
 namespace <?= $namespace; ?>;
 
 use Symfony\Component\Routing\Annotation\Route;
-use MNC\RestBundle\Annotations\Resource;
-use MNC\RestBundle\Controller\RestController;
-use MNC\RestBundle\Controller\RestfulActionsTrait;
+use MNC\Bundle\RestBundle\Annotations\Resource;
+use MNC\Bundle\RestBundle\Controller\RestController;
+use MNC\Bundle\RestBundle\Controller\RestfulActionsTrait;
 
 /**
  * @Route("/<?= $resource_name_plural; ?>")

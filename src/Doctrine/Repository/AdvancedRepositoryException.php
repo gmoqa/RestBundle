@@ -1,10 +1,10 @@
 <?php
 
-namespace MNC\RestBundle\Doctrine\Repository;
+namespace MNC\Bundle\RestBundle\Doctrine\Repository;
 
 /**
  * Class AdvancedRepositoryException
- * @package MNC\RestBundle\Doctrine\Repository
+ * @package MNC\Bundle\RestBundle\Doctrine\Repository
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 class AdvancedRepositoryException extends \Exception

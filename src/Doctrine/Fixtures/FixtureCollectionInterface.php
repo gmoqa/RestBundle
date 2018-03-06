@@ -1,10 +1,10 @@
 <?php
 
-namespace MNC\RestBundle\Doctrine\Fixtures;
+namespace MNC\Bundle\RestBundle\Doctrine\Fixtures;
 
 /**
  * Interface FixtureCollectionInterface
- * @package MNC\RestBundle\Doctrine\Fixtures
+ * @package MNC\Bundle\RestBundle\Doctrine\Fixtures
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 interface FixtureCollectionInterface

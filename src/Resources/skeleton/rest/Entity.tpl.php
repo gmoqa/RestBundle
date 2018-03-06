@@ -3,8 +3,8 @@
 namespace <?= $namespace ?>;
 
 use Doctrine\ORM\Mapping as ORM;
-use MNC\RestBundle\Annotations\ResourceManager;
-use MNC\RestBundle\Annotations\UriIdentifier;
+use MNC\Bundle\RestBundle\Annotations\ResourceManager;
+use MNC\Bundle\RestBundle\Annotations\UriIdentifier;
 
 /**
  * @ORM\Entity(repositoryClass="<?= $repository_full_class_name ?>")

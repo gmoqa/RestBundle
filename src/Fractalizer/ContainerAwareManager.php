@@ -1,6 +1,6 @@
 <?php
 
-namespace MNC\RestBundle\Fractalizer;
+namespace MNC\Bundle\RestBundle\Fractalizer;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\ResourceInterface;
