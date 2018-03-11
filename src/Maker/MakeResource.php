@@ -21,7 +21,7 @@ final class MakeResource extends AbstractMaker
 {
     public static function getCommandName(): string
     {
-        return 'make:resource';
+        return 'make:rest:resource';
     }
 
     public function configureCommand(Command $command, InputConfiguration $inputConfig)
@@ -87,7 +87,6 @@ final class MakeResource extends AbstractMaker
             __DIR__.'/../Resources/skeleton/rest/Entity.tpl.php',
             [
                 'repository_full_class_name' => $repositoryClassDetails->getFullName(),
-                'manager_full_class_name' => $managerClassDetails->getFullName(),
             ]
         );
 
@@ -108,6 +107,10 @@ final class MakeResource extends AbstractMaker
             __DIR__.'/../Resources/skeleton/rest/ResourceManager.tpl.php',
             [
                 'repository_full_class_name' => $repositoryClassDetails->getFullName(),
+                'transformer_full_class_name' => $transformerClassDetails->getFullName(),
+                'transformer_class_name' => $transformerClassDetails->getShortName(),
+                'form_full_class_name' => $formClassDetails->getFullName(),
+                'form_class_name' => $formClassDetails->getShortName(),
                 'repository_class_name' => $repositoryClassDetails->getShortName(),
                 'entity_alias' => $qbAlias,
             ]
@@ -141,9 +144,8 @@ final class MakeResource extends AbstractMaker
             [
                 'resource_name' => $resourceName,
                 'resource_name_plural' => $resourceNamePlural,
-                'entity_full_class_name' => $entityClassDetails->getFullName(),
-                'form_full_class_name' => $formClassDetails->getFullName(),
-                'transformer_full_class_name' => $transformerClassDetails->getFullName(),
+                'manager_class_name' => $managerClassDetails->getShortName(),
+                'manager_full_class_name' => $managerClassDetails->getFullName(),
             ]
         );
 

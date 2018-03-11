@@ -20,10 +20,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: -40 }
 
-    MNC\Bundle\RestBundle\EventListener\RestControllerListener:
-        tags:
-            - { name: kernel.event_listener, event: kernel.controller }
-
     # MAKERS
     MNC\Bundle\RestBundle\Maker\MakeResource:
         tags:
@@ -60,7 +56,7 @@ services:
         arguments: ['@validator.mapping.class_metadata_factory']
 
     # VOTERS
-    MNC\Bundle\RestBundle\Security\OwnableResourceVoter:
+    MNC\Bundle\RestBundle\Security\ProtectedResourceVoter:
         tags:
             - { name: security.voter }
 

@@ -13,7 +13,7 @@ use MNC\Bundle\RestBundle\Helper\RestInfo;
 use MNC\Bundle\RestBundle\Helper\RestInfoInterface;
 use MNC\Bundle\RestBundle\Helper\RouteActionVerb;
 use MNC\Bundle\RestBundle\Security\OwnableInterface;
-use MNC\Bundle\RestBundle\Security\OwnableResourceVoter;
+use MNC\Bundle\RestBundle\Security\ProtectedResourceVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,7 +39,7 @@ trait RestfulActionsTrait
     public function indexAction(Request $request)
     {
         if ($this->manager !== null) {
-            $data = $this->getManager()->indexResource($request);
+            $data = $this->getResourceManager()->indexResource($request);
         } else {
             /** @var EntityRepository $repo */
             $repo = $this->getDoctrine()->getRepository($this->entity);
@@ -75,7 +75,6 @@ trait RestfulActionsTrait
      * @param Request $request
      * @param         $id
      * @return JsonResponse
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function editAction(Request $request, $id)
     {
@@ -105,8 +104,6 @@ trait RestfulActionsTrait
      */
     public function showAction(Request $request, $id)
     {
-        $token = $this->get('security.token_storage')->getToken();
-
         $query = $this->getResourceByIdentifierQuery($id);
         $data = $query->getQuery()->getResult();
 
@@ -116,10 +113,10 @@ trait RestfulActionsTrait
 
         if (sizeof($data) <= 1) {
             $data = array_shift($data);
-            $this->denyAccessUnlessGranted(OwnableResourceVoter::VIEW, $data);
+            $this->denyAccessUnlessGranted(ProtectedResourceVoter::VIEW, $data);
         } else {
             foreach ($data as $item) {
-                $this->denyAccessUnlessGranted(OwnableResourceVoter::VIEW, $item);
+                $this->denyAccessUnlessGranted(ProtectedResourceVoter::VIEW, $item);
             }
         }
 
@@ -190,7 +187,7 @@ trait RestfulActionsTrait
 
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
-        $this->denyAccessUnlessGranted(OwnableResourceVoter::UPDATE, $entity);
+        $this->denyAccessUnlessGranted(ProtectedResourceVoter::UPDATE, $entity);
 
         if ($form->isValid() && $form->isSubmitted()) {
 
@@ -228,7 +225,7 @@ trait RestfulActionsTrait
             throw $this->createNotFoundException("The requested $this->name resource could not be found.");
         }
 
-        $this->denyAccessUnlessGranted(OwnableResourceVoter::DELETE, $entity);
+        $this->denyAccessUnlessGranted(ProtectedResourceVoter::DELETE, $entity);
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($entity);

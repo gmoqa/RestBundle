@@ -2,14 +2,12 @@
 
 namespace MNC\Bundle\RestBundle\Manager;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\QueryBuilder;
-use MNC\Bundle\RestBundle\Helper\RestInfoInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Interface ResourceManagerInterface
@@ -19,30 +17,69 @@ use Symfony\Component\HttpFoundation\Response;
 interface ResourceManagerInterface extends ObjectManager
 {
     /**
-     * @return RestInfoInterface
+     * Creates an instance of the entity the manager is associated with.
+     * @return object
      */
-    public function getRestInfo();
+    public function create();
+    /**
+     * Returns the FormFactory service.
+     * @return FormFactoryInterface
+     */
+    public function getFormFactory() : FormFactoryInterface;
 
     /**
-     * @return EntityManagerInterface
+     * Returns Doctrine's Entity Manager.
+     * @return ObjectManager
      */
-    public function getEntityManager();
+    public function getEntityManager( ) : ObjectManager;
 
     /**
-     * This method is only called if you are using the RestfulActions trait.
-     *
-     * This method is called in your index method to fetch resources from your
-     * database. It can return an instance of QueryBuilder, ArrayCollection,
-     * PersistentCollection or simply an array.
-     * You can also return a response directly.
-     * Works best when you return a QueryBuilder object ready to be fetched.
-     *
-     * Use this method to manage your listing of resources according to your
-     * bussiness rules. For managing permissions to other single resources you can
-     * use the OnwnableInterface or the RestrictableInterface.
-     *
+     * @return string
+     */
+    public function getEntityClass();
+
+    /**
+     * @return string
+     */
+    public function getTransformerClass();
+
+    /**
+     * @return string
+     */
+    public function getIdentifier();
+
+    /**
+     * Creates a form for the given entity.
+     * @param null $entity
+     * @return FormInterface
+     */
+    public function createForm($entity = null) : FormInterface;
+
+    /**
+     * Process and validates a form.
+     * @param FormInterface      $form
+     * @param UserInterface|null $user
+     * @return mixed
+     */
+    public function processForm(FormInterface $form, UserInterface $user = null);
+
+    /**
+     * This method gets a collection of resources. You can pass it an array of
+     * filters to be created.
+     * It must return an instance of QueryBuilder.
      * @param Request $request
-     * @return QueryBuilder|ArrayCollection|PersistentCollection|array|Response
+     * @param array   $filters
+     * @return QueryBuilder
      */
-    public function indexResource(Request $request);
+    public function indexResource(Request $request, $filters = []) : QueryBuilder;
+
+    /**
+     * Shows a resource based on it's identifier.
+     * @param      $value
+     * @param bool $justOne
+     * @throws ResourceManagerException When asking multiple resources when just
+     *                                  one option is enabled.
+     * @return mixed
+     */
+    public function showResource($value, bool $justOne = false);
 }

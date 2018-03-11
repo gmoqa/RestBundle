@@ -2,116 +2,176 @@
 
 namespace MNC\Bundle\RestBundle\Manager;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManagerInterface;
-use MNC\Bundle\RestBundle\Helper\RestInfo;
-use MNC\Bundle\RestBundle\Helper\RestInfoInterface;
+use MNC\Bundle\RestBundle\Security\OwnableInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * This class is a Wrapper of the original EntityManager. It makes some of it's
- * methods a little bit less verbose.
+ * This class is a base class for a resource Manager. It wraps Doctrine's Entity
+ * Manager inside it, and also creates some common operations for objects.
  * @package MNC\Bundle\RestBundle\Manager
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 abstract class AbstractResourceManager implements ResourceManagerInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-    /**
-     * @var RestInfoInterface
-     */
-    private $restInfo;
+    use EntityManagerWrapperTrait;
 
-    public function __construct(EntityManagerInterface $manager)
+    /**
+     * @var string
+     */
+    protected $entityClass;
+    /**
+     * @var string
+     */
+    protected $formClass;
+    /**
+     * @var string
+     */
+    protected $transformerClass;
+    /**
+     * @var string
+     */
+    protected $identifier;
+    /**
+     * @var FormFactoryInterface
+     */
+    private $formFactory;
+    /**
+     * @var ServiceEntityRepository
+     */
+    private $repository;
+
+    public function __construct(ServiceEntityRepository $repository, ManagerRegistry $registry, FormFactoryInterface $formFactory)
     {
-        $this->em = $manager;
+        $this->repository = $repository;
+        $this->formFactory = $formFactory;
+        $this->entityClass = $this->repository->getClassName();
+        $this->em = $registry->getManagerForClass($this->entityClass);
     }
 
-    public function getEntityManager()
+    /**
+     * @inheritdoc
+     */
+    public function create()
+    {
+        return new $this->entityClass;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFormFactory() : FormFactoryInterface
+    {
+        return $this->formFactory;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEntityManager() : ObjectManager
     {
         return $this->em;
     }
 
     /**
-     * @param RestInfoInterface $restInfo
+     * This method overrides the Entity Manager Method for getting a repository.
+     * @param null $className
+     * @return ServiceEntityRepository|\Doctrine\Common\Persistence\ObjectRepository
      */
-    public function setRestInfo(RestInfoInterface $restInfo)
+    public function getRepository($className = null)
     {
-        $this->restInfo = $restInfo;
-    }
-
-    /**
-     * @return RestInfoInterface
-     */
-    public function getRestInfo()
-    {
-        return $this->restInfo;
-    }
-
-    public function find($className, $id)
-    {
-        return $this->em->find($className, $id);
-    }
-
-    public function persist($object)
-    {
-        return $this->em->persist($object);
-    }
-
-    public function remove($object)
-    {
-        return $this->em->remove($object);
-    }
-
-    public function merge($object)
-    {
-        return $this->em->merge($object);
-    }
-
-    public function clear($objectName = null)
-    {
-        return $this->em->clear($objectName = null);
-    }
-
-    public function detach($object)
-    {
-        return $this->em->detach($object);
-    }
-
-    public function refresh($object)
-    {
-        return $this->em->refresh($object);
-    }
-
-    public function flush()
-    {
-        return $this->em->flush();
-    }
-
-    public function getRepository($className)
-    {
+        if (!$className) {
+            return $this->repository;
+        }
         return $this->em->getRepository($className);
     }
 
-    public function getClassMetadata($className)
+    /**
+     * @param null $className
+     * @return ServiceEntityRepository|\Doctrine\Common\Persistence\Mapping\ClassMetadata|\Doctrine\Common\Persistence\ObjectRepository
+     */
+    public function getClassMetadata($className = null)
     {
-        return $this->em->getClassMetadata($className);
+        if (!$className) {
+            return $this->repository;
+        }
+        return $this->em->getRepository($className);
     }
 
-    public function getMetadataFactory()
+    public function getEntityClass()
     {
-       return $this->em->getMetadataFactory();
+        return $this->entityClass;
     }
 
-    public function initializeObject($obj)
+    public function getTransformerClass()
     {
-        return $this->initializeObject($obj);
+        return $this->transformerClass;
     }
 
-    public function contains($object)
+    public function getIdentifier()
     {
-        return $this->em->contains($object);
+        return $this->identifier;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createForm($entity = null) : FormInterface
+    {
+        $groups = ['Default'];
+        if ($entity === null) {
+            $groups[] = 'New';
+            $entity = $this->create();
+        } else {
+            $groups[] = 'Edit';
+        }
+
+        $form = $this->getFormFactory()->create($this->formClass, $entity, [
+            'validation_groups' => $groups,
+            'csrf_protection' => false
+        ]);
+
+        return $form;
+    }
+
+    /**
+     * @param FormInterface      $form
+     * @param UserInterface|null $user
+     * @return mixed|null
+     */
+    public function processForm(FormInterface $form, UserInterface $user = null)
+    {
+        if ($form->isValid() && $form->isSubmitted()) {
+
+            $entity = $form->getData();
+
+            if ($entity instanceof OwnableInterface AND $user !== null AND $entity->getOwner() === null) {
+                $entity->setOwner($user);
+            }
+
+            $this->persist($entity);
+            $this->flush();
+
+            return $entity;
+        }
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function showResource($value, bool $justOne = false)
+    {
+        if (strpos($value, ',') !== false) {
+            if ($justOne) {
+                throw ResourceManagerException::cannotShowMultipleResources();
+            }
+            return $this->repository->findBy([$this->identifier => explode(',', $value)]);
+        }
+        return $this->repository->{'findOneBy'.ucfirst($this->identifier)}($value);
     }
 }

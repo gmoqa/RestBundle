@@ -3,13 +3,9 @@
 namespace <?= $namespace ?>;
 
 use Doctrine\ORM\Mapping as ORM;
-use MNC\Bundle\RestBundle\Annotations\ResourceManager;
-use MNC\Bundle\RestBundle\Annotations\UriIdentifier;
 
 /**
  * @ORM\Entity(repositoryClass="<?= $repository_full_class_name ?>")
- * @UriIdentifier("id")
- * @ResourceManager("<?= $manager_full_class_name ?>")
  */
 class <?= $class_name."\n" ?>
 {

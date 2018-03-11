@@ -2,28 +2,18 @@
 
 namespace MNC\Bundle\RestBundle\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
 use League\Fractal\TransformerAbstract;
-use MNC\AgileBundle\ObjectManager\AbstractObjectManager;
 use MNC\Bundle\RestBundle\ApiProblem\ApiError;
 use MNC\Bundle\RestBundle\ApiProblem\ApiProblem;
 use MNC\Bundle\RestBundle\ApiProblem\ApiProblemException;
 use MNC\Bundle\RestBundle\Fractalizer\Fractalizer;
-use MNC\Bundle\RestBundle\Helper\RestInfo;
-use MNC\Bundle\RestBundle\Helper\RestInfoInterface;
 use MNC\Bundle\RestBundle\Helper\RouteActionVerb;
-use MNC\Bundle\RestBundle\Manager\AbstractResourceManager;
-use MNC\Bundle\RestBundle\Security\OwnableResourceVoter;
+use MNC\Bundle\RestBundle\Security\ProtectedResourceInterface;
+use MNC\Bundle\RestBundle\Security\ProtectedResourceVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * This controller serves as a base controller for Rapid Api development. To
@@ -36,112 +26,17 @@ use Symfony\Component\Routing\Annotation\Route;
 abstract class RestController extends Controller
 {
     /**
-     * @var string
-     */
-    protected $name;
-    /**
-     * @var string
-     */
-    protected $entity;
-    /**
-     * @var string
-     */
-    protected $identifier;
-    /**
-     * @var string
-     */
-    protected $form;
-    /**
-     * @var string
-     */
-    protected $transformer;
-    /**
-     * @var string
-     */
-    protected $manager;
-    /**
-     * @var string
-     */
-    protected $action;
-    /**
-     * @var RestInfoInterface
-     */
-    private $restInfo;
-
-    /**
-     * This method boots the controller giving it the RestInfo object.
-     * Sets all the necessary params for this controller to work properly.
-     * Also passes the RestInfo to the Resource Manager.
-     * @param RestInfoInterface $restInfo
-     */
-    public function boot(RestInfoInterface $restInfo)
-    {
-        $this->name = $restInfo->getName();
-        $this->entity = $restInfo->getEntityClass();
-        $this->form = $restInfo->getFormClass();
-        $this->identifier = $restInfo->getIdentifier();
-        $this->action = $restInfo->getActionVerb();
-        $this->transformer = $restInfo->getTransformerClass();
-        $this->manager = $restInfo->getManagerClass();
-        $this->restInfo = $restInfo;
-        $manager = $this->getManager();
-        if ($manager instanceof AbstractResourceManager) {
-            $manager->setRestInfo($restInfo);
-        }
-    }
-
-    /**
-     * @return RestInfoInterface
-     */
-    protected function getRestInfo()
-    {
-        return $this->restInfo;
-    }
-
-    /**
-     * @return AbstractResourceManager|EntityManagerInterface
-     */
-    protected function getManager()
-    {
-        if ($this->manager === null) {
-            return $this->get('doctrine.orm.entity_manager');
-        }
-        return $this->get($this->manager);
-    }
-
-    /**
-     * @return TransformerAbstract
-     */
-    protected function getTransformer()
-    {
-        return $this->get($this->transformer);
-    }
-
-    /**
-     * Gets a single resource from the database, based on the identifier.
-     * @param $id
-     * @return QueryBuilder
-     */
-    protected function getResourceByIdentifierQuery($id)
-    {
-        /** @var EntityRepository $repo */
-        $repo = $this->getDoctrine()->getRepository($this->entity);
-        return $repo->findByIdentifierQuery($this->identifier, $id);
-    }
-
-    /**
      * Build an absolute route to include in the location header.
      * @param      $entity
      * @param null $route
+     * @param      $identifier
      * @return string
      */
-    protected function buildLocationHeaderUrl($entity, $route = null)
+    protected function createResourceUrl($entity, $route, $identifier)
     {
         $pa = PropertyAccess::createPropertyAccessor();
-        if ($route === null) {
-            $route = 'api_'.$this->name.'_show';
-        }
-        return $this->get('router')->generate($route, ['id' => $pa->getValue($entity, $this->identifier)], 0);
+        $router = $this->get('router');
+        return $router->generate($route, ['id' => $pa->getValue($entity, $identifier)], 0);
     }
 
     /**
@@ -172,6 +67,7 @@ abstract class RestController extends Controller
     /**
      * Builds a response based on the data provided. Tries to guess if should be
      * paginated or not.
+     * @param       $transformerClass
      * @param       $data
      * @param int   $statusCode
      * @param array $headers
@@ -179,7 +75,7 @@ abstract class RestController extends Controller
      * @throws \Exception
      * @throws \HttpResponseException
      */
-    protected function createResourceResponse($data = null, $statusCode = 200, $headers = [])
+    protected function createResourceResponse($transformerClass, $data = null, $statusCode = 200, $headers = [])
     {
         if ($data === null && $statusCode !== 204) {
             throw new \HttpResponseException("You cannot have null data without a 204 status code");
@@ -188,18 +84,11 @@ abstract class RestController extends Controller
         if ($data === null) {
             return new JsonResponse(null, 204);
         }
-
-        $array = $this->fractalize($data, $this->getTransformer());
+        /** @var TransformerAbstract $transformer */
+        $transformer = $this->get($transformerClass);
+        $array = $this->fractalize($data, $transformer);
 
         return JsonResponse::create($array, $statusCode, $headers);
-    }
-
-    /**
-     * @return \Doctrine\Common\Persistence\ObjectRepository
-     */
-    protected function getRepo()
-    {
-        return $this->getManager()->getRepository($this->entity);
     }
 
     /**
@@ -210,6 +99,30 @@ abstract class RestController extends Controller
      */
     protected function fractalize($data, TransformerAbstract $transformer)
     {
-        return $this->get(Fractalizer::class)->fractalize($data, $transformer, $this->getRestInfo()->getName());
+        return $this->get(Fractalizer::class)->fractalize($data, $transformer);
+    }
+
+    /**
+     * @param $resultSet
+     * @return array
+     */
+    protected function applyDynamicPermissionCheck($resultSet)
+    {
+        $user = $this->getUser();
+
+        if (is_array($resultSet)) {
+            $resultSet = array_filter($resultSet, function ($element) use ($user) {
+                if ($element instanceof ProtectedResourceInterface) {
+                    return $element->isVisibleBy($user);
+                }
+                return true;
+            });
+        } else {
+            if ($resultSet instanceof ProtectedResourceInterface) {
+                $this->denyAccessUnlessGranted(ProtectedResourceVoter::VIEW, $resultSet);
+            }
+        }
+
+        return $resultSet;
     }
 }

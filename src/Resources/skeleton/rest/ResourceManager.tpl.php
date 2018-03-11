@@ -3,33 +3,36 @@
 namespace <?= $namespace; ?>;
 
 use <?= $repository_full_class_name;?>;
-use Doctrine\ORM\EntityManagerInterface;
+use <?= $transformer_full_class_name;?>;
+use <?= $form_full_class_name;?>;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
 use MNC\Bundle\RestBundle\Manager\AbstractResourceManager;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class <?= $class_name; ?> extends AbstractResourceManager
 {
     /**
-     * This method is only called if you are using the RestfulActions trait.
-     *
-     * This method is called in your index method to fetch resources from your
-     * database. It can return an instance of QueryBuilder, ArrayCollection,
-     * PersistentCollection or simply an array.
-     * You can also return a response directly.
-     * Works best when you return a QueryBuilder object ready to be fetched.
-     *
-     * Use this method to manage your listing of resources according to your
-     * bussiness rules. For managing permissions to other single resources you can
-     * use the OnwnableInterface or the RestrictableInterface.
-     *
-     * @param Request $request
-     * @return \Doctrine\ORM\QueryBuilder
+     * <?= $class_name;?> constructor.
+     * @param <?= $repository_class_name; ?> $repository
+     * @param ManagerRegistry      $registry
+     * @param FormFactoryInterface $formFactory
      */
-    public function indexResource(Request $request)
+    public function __construct(<?= $repository_class_name; ?> $repository, ManagerRegistry $registry, FormFactoryInterface $formFactory)
+    {
+        $this->formClass = <?= $form_class_name; ?>::class;
+        $this->transformerClass = <?= $transformer_class_name; ?>::class;
+        $this->identifier = 'id';
+        parent::__construct($repository, $registry, $formFactory);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function indexResource(Request $request, $filters = []) : QueryBuilder
     {
         /** @var <?= $repository_class_name; ?> $repo */
-        $repo = $this->getRepository($this->getRestInfo()->getEntityClass());
-        $query = $repo->createQueryBuilder('<?= $entity_alias; ?>');
-        return $query;
+        return $this->getRepository()->createQueryBuilder('<?= $entity_alias; ?>');
     }
 }

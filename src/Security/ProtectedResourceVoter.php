@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @package Security
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
-class OwnableResourceVoter extends Voter
+class ProtectedResourceVoter extends Voter
 {
     const VIEW = 'view';
     const UPDATE = 'update';
@@ -25,8 +25,8 @@ class OwnableResourceVoter extends Voter
      */
     protected function supports($attribute, $subject)
     {
-        // We only support objects that implement OwnableInterface
-        if (!$subject instanceof OwnableInterface) {
+        // We only support objects that implement ProtectedResourceInterface
+        if (!$subject instanceof ProtectedResourceInterface) {
             return false;
         }
 
@@ -53,7 +53,7 @@ class OwnableResourceVoter extends Voter
             return false;
         }
 
-        /** @var OwnableInterface $entity */
+        /** @var ProtectedResourceInterface $entity */
         $entity = $subject;
 
         switch ($attribute) {
