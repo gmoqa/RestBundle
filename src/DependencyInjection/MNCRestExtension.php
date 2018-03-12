@@ -2,8 +2,10 @@
 
 namespace MNC\Bundle\RestBundle\DependencyInjection;
 
+use League\Fractal\TransformerAbstract;
 use MNC\Bundle\RestBundle\DependencyInjection\Compiler\EntityFactoryCompilerPass;
 use MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionInterface;
+use MNC\Bundle\RestBundle\Manager\AbstractResourceManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -27,6 +29,14 @@ class MNCRestExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
         $loader->load('liform_transformers.yml');
+
+        $container->registerForAutoconfiguration(TransformerAbstract::class)
+            ->addTag('mnc_rest.transformer')
+            ->setPublic(true);
+
+        $container->registerForAutoconfiguration(AbstractResourceManager::class)
+            ->addTag('mnc_rest.resource_manager')
+            ->setPublic(true);
 
         $container->registerForAutoconfiguration(FactoryDefinitionInterface::class)
             ->addTag(EntityFactoryCompilerPass::TAG);

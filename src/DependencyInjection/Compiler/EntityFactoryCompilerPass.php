@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class EntityFactoryCompilerPass implements CompilerPassInterface
 {
-    const TAG = 'factory.definition';
+    const TAG = 'mnc_rest.factory_definition';
 
     public function process(ContainerBuilder $container)
     {
