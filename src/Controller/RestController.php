@@ -13,6 +13,8 @@ use MNC\Bundle\RestBundle\Security\ProtectedResourceVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
@@ -71,19 +73,19 @@ abstract class RestController extends Controller
      * @param       $data
      * @param int   $statusCode
      * @param array $headers
-     * @return JsonResponse
+     * @return Response
      * @throws \Exception
-     * @throws \HttpResponseException
      */
     protected function createResourceResponse($transformerClass, $data = null, $statusCode = 200, $headers = [])
     {
-        if ($data === null && $statusCode !== 204) {
-            throw new \HttpResponseException("You cannot have null data without a 204 status code");
+        if ($statusCode === 204) {
+            return new Response(null, 204, $headers);
         }
 
         if ($data === null) {
             return new JsonResponse(null, 204);
         }
+
         /** @var TransformerAbstract $transformer */
         $transformer = $this->get($transformerClass);
         $array = $this->fractalize($data, $transformer);
