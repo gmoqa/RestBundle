@@ -1,6 +1,7 @@
 <?php
 
 namespace MNC\Bundle\RestBundle\EntityFactory;
+use MNC\Bundle\RestBundle\Doctrine\Fixtures\FixtureCollection;
 
 /**
  * This class defines an interface.
@@ -10,20 +11,17 @@ namespace MNC\Bundle\RestBundle\EntityFactory;
 interface EntityFactoryInterface
 {
     /**
-     * Registers a entity factory definition.
-     * @param          $className
-     * @param callable $callable
-     * @throws EntityFactoryException If the class does not exist.
-     * @return mixed
-     */
-    public function define($className, callable $callable);
-
-    /**
-     * Creates a factory collection.
+     * Creates a fixture collection from a entity factory.
      * @param               $classname
      * @param int           $number The number of elements to make.
      * @param callable|null $callable A callback to be applied to each element.
-     * @return mixed
+     * @return object|FixtureCollection
      */
     public function make($classname, $number, callable $callable = null);
+
+    /**
+     * Loads the factory definitions into the service.
+     * @return void
+     */
+    public function loadDefinitions();
 }

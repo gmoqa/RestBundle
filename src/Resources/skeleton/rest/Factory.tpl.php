@@ -1,0 +1,29 @@
+<?= "<?php\n"; ?>
+
+namespace <?= $namespace; ?>;
+
+use MNC\Bundle\RestBundle\Doctrine\Fixtures\AdvancedFixture;
+use MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionInterface;
+use Faker\Generator;
+use <?= $entity_full_class_name; ?>;
+
+class <?= $class_name; ?> implements FactoryDefinitionInterface
+{
+    /**
+     * @inheritdoc
+     */
+    public function getEntityClassname(): string
+    {
+        return <?= $entity_class_name; ?>::class;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getData(Generator $faker) : array
+    {
+        return [
+            //'name' => $faker->name
+        ];
+    }
+}

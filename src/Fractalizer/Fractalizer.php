@@ -49,6 +49,7 @@ class Fractalizer
     /**
      * @param                     $data
      * @param TransformerAbstract $transformer
+     * @param null                $resourceKey
      * @return array
      * @throws \Exception
      */
@@ -61,8 +62,6 @@ class Fractalizer
 //        }
 
         if ($this->isPluralResponse($data)) {
-
-            // $this->resolveCollectionFilters($data);
 
             $paginator = $this->instantiatePaginator($data);
             $results = $paginator->getPaginator()->getCurrentPageResults();
@@ -78,7 +77,7 @@ class Fractalizer
             }
             $resource = new Item($data, $transformer, $resourceKey);
         }
-        return $this->manager->createData($resource)->toArray();
+        return array_reverse($this->manager->createData($resource)->toArray(), true);
     }
 
     /**
@@ -151,6 +150,7 @@ class Fractalizer
     /**
      * Checks the with query param and eager loads the relationships.
      * @param QueryBuilder $query
+     * @deprecated
      * @return QueryBuilder
      */
     private function eagerLoadWith(QueryBuilder $query)
@@ -179,14 +179,5 @@ class Fractalizer
             }
         }
         return $query;
-    }
-
-    /**
-     * Resolves the collection filters.
-     * @param mixed $data
-     */
-    private function resolveCollectionFilters($data)
-    {
-        return $this->filterManager->resolve($data);
     }
 }

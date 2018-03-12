@@ -9,7 +9,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
- * Class EntityFactory
+ * This class is responsible for creating collections of items from Entity Factories.
  * @package MNC\Bundle\RestBundle\EntityFactory
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
@@ -20,43 +20,38 @@ class EntityFactory implements EntityFactoryInterface
      */
     private $manager;
     /**
-     * @var array
-     */
-    private $definitions = [];
-    /**
      * @var FactoryDefinitionLoader
      */
     private $loader;
+    /**
+     * @var \Faker\Generator
+     */
+    private $faker;
+    /**
+     * @var PropertyAccessor
+     */
+    private $pa;
+    /**
+     * @var FactoryDefinitionInterface[]
+     */
+    private $definitions = [];
 
     public function __construct(EntityManagerInterface $manager, FactoryDefinitionLoader $loader)
     {
         $this->manager = $manager;
         $this->loader = $loader;
+        $this->faker = Factory::create();
+        $this->pa = PropertyAccess::createPropertyAccessor();
     }
 
-    /**
-     * @throws EntityFactoryException
-     */
     public function loadDefinitions()
     {
         /** @var FactoryDefinitionInterface[] $definitions */
         $definitions = $this->loader->getLoadedDefinitions();
-        foreach ($definitions as $definition) {
-            $this->define($definition->defineName(), function ($faker) use ($definition) {
-                return $definition->defineStructure($faker);
-            });
+        foreach ($definitions as $definition)
+        {
+            $this->definitions[$definition->getEntityClassName()] = $definition;
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function define($className, callable $callable)
-    {
-        if (!class_exists($className)) {
-            throw EntityFactoryException::classDoesNotExist($className);
-        }
-        $this->definitions[$className] = $callable;
     }
 
     /**
@@ -68,32 +63,25 @@ class EntityFactory implements EntityFactoryInterface
             throw EntityFactoryException::definitionDoesNotExist($classname);
         }
 
+        $definition = $this->definitions[$classname];
+
+        // If is just one record, we just return a single object.
+        if ($number === 1) {
+            $data = $definition->getData($this->faker);
+            return $this->createObject($classname, $data, $callable);
+        }
+
+        // Now we are dealing with a collection.
         $collection = [];
 
-        $faker = Factory::create();
-        $pa = PropertyAccess::createPropertyAccessor();
-
-        if ($number === 1) {
-            $data = $this->call($classname, $faker);
-            return $this->createObject($classname, $data, $callable, $pa);
-        }
-
         for ($i = 1; $i <= $number; $i++) {
-            $data = $this->call($classname, $faker);
-            $collection[] = $this->createObject($classname, $data, $callable, $pa);
+            $data = $definition->getData($this->faker);
+            $collection[] = $this->createObject($classname, $data, $callable);
         }
-        $collection = new FixtureCollection($collection);
-        return $collection;
-    }
 
-    /**
-     * @param $classname
-     * @param $faker
-     * @return mixed
-     */
-    private function call($classname, $faker)
-    {
-        return call_user_func_array($this->definitions[$classname], [$faker]);
+        $collection = new FixtureCollection($collection);
+
+        return $collection;
     }
 
     /**
@@ -110,20 +98,19 @@ class EntityFactory implements EntityFactoryInterface
     /**
      * @param                  $classname
      * @param                  $data
-     * @param                  $callable
-     * @param PropertyAccessor $pa
+     * @param callable         $callable
      * @return mixed
      * @throws EntityFactoryException
      * @throws \TypeError
      */
-    private function createObject($classname, $data, callable $callable, PropertyAccessor $pa)
+    private function createObject($classname, $data, callable $callable = null)
     {
         $object = new $classname;
         foreach ($data as $prop => $value) {
-            if (!$pa->isWritable($object, $prop)) {
+            if (!$this->pa->isWritable($object, $prop)) {
                 throw EntityFactoryException::propertyNotWritable($prop, $classname);
             }
-            $pa->setValue($object, $prop, $value);
+            $this->pa->setValue($object, $prop, $value);
         }
         if ($callable !== null) {
             $object = $this->applyCallback($callable, $object);

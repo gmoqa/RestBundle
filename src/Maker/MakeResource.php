@@ -81,6 +81,12 @@ final class MakeResource extends AbstractMaker
             'Fixture'
         );
 
+        $factoryClassDetails = $generator->createClassNameDetails(
+            $baseName,
+            'EntityFactory\\',
+            'Factory'
+        );
+
         // Generating Entity
         $generator->generateClass(
             $entityClassDetails->getFullName(),
@@ -153,6 +159,17 @@ final class MakeResource extends AbstractMaker
         $generator->generateClass(
             $fixtureClassDetails->getFullName(),
             __DIR__.'/../Resources/skeleton/rest/Fixture.tpl.php',
+            [
+                'resource_name' => $resourceName,
+                'entity_full_class_name' => $entityClassDetails->getFullName(),
+                'entity_class_name' => $entityClassDetails->getShortName(),
+            ]
+        );
+
+        // Generating EntityFactory
+        $generator->generateClass(
+            $factoryClassDetails->getFullName(),
+            __DIR__.'/../Resources/skeleton/rest/Factory.tpl.php',
             [
                 'resource_name' => $resourceName,
                 'entity_full_class_name' => $entityClassDetails->getFullName(),
