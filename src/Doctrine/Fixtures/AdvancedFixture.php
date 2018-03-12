@@ -4,7 +4,7 @@ namespace MNC\Bundle\RestBundle\Doctrine\Fixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Faker\Factory;
+use MNC\Bundle\RestBundle\EntityFactory\EntityFactory;
 
 /**
  * This provides some functionality to create fixtures more efficiently, faking
@@ -15,48 +15,33 @@ use Faker\Factory;
 abstract class AdvancedFixture extends Fixture
 {
     /**
-     * @var \Faker\Generator
-     */
-    protected $faker;
-
-    /**
      * @var FixtureCollection[]
      */
     protected $collectionRepository = [];
+    /**
+     * @var EntityFactory
+     */
+    private $factory;
 
     /**
      * AdvancedFixture constructor.
+     * @param EntityFactory $factory
      */
-    public function __construct()
+    public function __construct(EntityFactory $factory)
     {
-        $this->faker = Factory::create();
+        $this->factory = $factory;
     }
 
     /**
-     * @param ObjectManager          $manager
-     * @param                        $class
+     * @param                        $classname
      * @param                        $number
-     * @param callable               $callable
+     * @param callable|null          $callback
      * @return FixtureCollection
+     * @throws \MNC\Bundle\RestBundle\EntityFactory\EntityFactoryException
      */
-    public function fake(ObjectManager $manager, $class, $number, callable $callable)
+    public function make($classname, $number, callable $callback = null)
     {
-        // Fix collection! Is not taking records.
-        $items = [];
-        for ($i = 0; $i < $number; $i++) {
-            $entity = new $class();
-            $entity = $callable($entity, $this->faker);
-            if (!$entity instanceof $class) {
-                AdvancedFixtureException::invalidReturnValue($class);
-            }
-            $manager->persist($entity);
-            $items[] = $entity;
-        }
-        $manager->flush();
-        if (sizeof($items) === 1) {
-            return array_shift($items);
-        }
-        return $this->getCollection($manager, $class);
+        return $this->factory->make($classname, $number, $callback);
     }
 
     /**
@@ -69,5 +54,20 @@ abstract class AdvancedFixture extends Fixture
         $repo = $manager->getRepository($class);
         $items = $repo->findAll();
         return new FixtureCollection($items);
+    }
+
+    /**
+     * @param                        $collection
+     * @param ObjectManager          $manager
+     * @param bool                   $flush
+     */
+    public function persistCollection($collection, ObjectManager $manager, $flush = true)
+    {
+        foreach ($collection as $item) {
+            $manager->persist($item);
+        }
+        if ($flush) {
+            $manager->flush();
+        }
     }
 }

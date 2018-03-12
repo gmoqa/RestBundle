@@ -2,6 +2,7 @@
 
 namespace MNC\Bundle\RestBundle;
 
+use MNC\Bundle\RestBundle\DependencyInjection\Compiler\EntityFactoryCompilerPass;
 use MNC\Bundle\RestBundle\DependencyInjection\Compiler\ExtensionCompilerPass;
 use MNC\Bundle\RestBundle\DependencyInjection\Compiler\PublicServicesCompilerPass;
 use MNC\Bundle\RestBundle\DependencyInjection\Compiler\TransformerCompilerPass;
@@ -15,6 +16,7 @@ class MNCRestBundle extends Bundle
         $container->addCompilerPass(new TransformerCompilerPass());
         $container->addCompilerPass(new ExtensionCompilerPass());
         $container->addCompilerPass(new PublicServicesCompilerPass());
+        $container->addCompilerPass(new EntityFactoryCompilerPass());
         parent::build($container);
     }
 }

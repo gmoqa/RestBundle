@@ -72,3 +72,11 @@ services:
         public: true
         calls:
             - [setContainer, ['@service_container']]
+
+    MNC\Bundle\RestBundle\EntityFactory\EntityFactory:
+        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        calls:
+            - [loadDefinitions, []]
+
+    MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionLoader:
+        public: false

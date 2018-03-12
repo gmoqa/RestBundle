@@ -13,8 +13,6 @@ class FixtureCollection implements FixtureCollectionInterface, \IteratorAggregat
 
     protected $fetchedElements  = [];
 
-    protected $cursor = 0;
-
     public function __construct(array $elements = [])
     {
         $this->elements = $elements;
@@ -130,5 +128,25 @@ class FixtureCollection implements FixtureCollectionInterface, \IteratorAggregat
     public function getIterator()
     {
         return new \ArrayIterator($this->elements);
+    }
+
+    /**
+     * Applies the callback to every element of the collection.
+     * @param callable $callable
+     * @return array
+     */
+    public function map(callable $callable)
+    {
+        return array_map($callable, $this->elements);
+    }
+
+    /**
+     * Filters the elements of the collection using the callback.
+     * @param callable $callable
+     * @return array
+     */
+    public function filter(callable $callable)
+    {
+        return array_filter($this->elements, $callable);
     }
 }

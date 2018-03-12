@@ -2,6 +2,8 @@
 
 namespace MNC\Bundle\RestBundle\DependencyInjection;
 
+use MNC\Bundle\RestBundle\DependencyInjection\Compiler\EntityFactoryCompilerPass;
+use MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -25,5 +27,8 @@ class MNCRestExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
         $loader->load('liform_transformers.yml');
+
+        $container->registerForAutoconfiguration(FactoryDefinitionInterface::class)
+            ->addTag(EntityFactoryCompilerPass::TAG);
     }
 }
