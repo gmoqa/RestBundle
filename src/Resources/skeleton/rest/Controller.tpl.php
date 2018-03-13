@@ -34,7 +34,7 @@ class <?= $class_name; ?> extends RestController
      * Displays the json-schema form for creating a new <?= $resource_name ?> object.
      * @Route("/new", methods={"GET"})
      * @param <?= $manager_class_name; ?> $manager
-     * @return JsonResponse
+     * @return Response
      */
     public function newAction(<?= $manager_class_name; ?> $manager)
     {
@@ -49,7 +49,7 @@ class <?= $class_name; ?> extends RestController
      * @Route("", methods={"POST"})
      * @param Request       $request
      * @param <?= $manager_class_name; ?> $manager
-     * @return JsonResponse
+     * @return Response
      * @throws \Exception
      */
     public function storeAction(Request $request, <?= $manager_class_name; ?> $manager)
@@ -78,7 +78,7 @@ class <?= $class_name; ?> extends RestController
      * @param Request       $request
      * @param <?= $manager_class_name; ?> $manager
      * @param               $id
-     * @return JsonResponse
+     * @return Response
      * @throws \Exception
      */
     public function showAction(Request $request, <?= $manager_class_name; ?> $manager, $id)
@@ -96,7 +96,7 @@ class <?= $class_name; ?> extends RestController
      * @param Request       $request
      * @param <?= $manager_class_name; ?> $manager
      * @param               $id
-     * @return JsonResponse
+     * @return Response
      * @throws ResourceManagerException
      */
     public function editAction(Request $request, <?= $manager_class_name; ?> $manager, $id)
@@ -114,7 +114,7 @@ class <?= $class_name; ?> extends RestController
      * @param Request       $request
      * @param <?= $manager_class_name; ?> $manager
      * @param               $id
-     * @return JsonResponse
+     * @return Response
      * @throws \Exception
      */
     public function updateAction(Request $request, <?= $manager_class_name; ?> $manager, $id)

@@ -14,11 +14,12 @@ class <?= $class_name; ?> extends AdvancedFixture implements OrderedFixtureInter
      */
     public function getOrder()
     {
-        return 1;
+        // TODO: Set the fixture number.
     }
 
     /**
      * @param ObjectManager $manager
+     * @throws \MNC\Bundle\RestBundle\EntityFactory\EntityFactoryException
      */
     public function load(ObjectManager $manager)
     {
