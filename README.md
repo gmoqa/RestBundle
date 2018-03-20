@@ -43,40 +43,23 @@ Then register the bundle in your `bundles.php`:
     ];
 
 ## Configuration
+This bundle does not need previous configuration in order to work.
 
-### Access Desition Manager
-If you are going to extend the `RestController` in your controllers, then you should
-now that it uses Symfony Security Voters to grant/deny access to entities implementing our
-`OwnableInterface`. However, in entities not implementing that interface, this will
-cause an access denied due to the Symfony's Access Desition Manager default config.
-
-To solve this, we recommend you the following configuration in your security config:
-
-    // config/security.yml
-    
-    security:
-        
-        #...
-        
-        access_decision_manager:
-            strategy: unanimous
-            allow_if_all_abstain: true
+## Requirements
+In order to enable fast-devopment features is very recommended that you install 
+the `symfony/maker-bundle` with composer.
 
 ## Usage
 
-First, create a resource:
+First, create a resource and give it a name.
 
     php bin/console make:resource post
 
-Then, configure your entity.
+Then, you should start writing your application logic, from your database seeding
+to your fixtures, and other things.
 
-Then, configure the fixtures.
-
-Update your database.
-
-Go to some endpoint to fecth resources.
-
-To get a deep understanding on how this bundle works, read [the docs](/src/Resources/docs/0.intro.md).
+To get a deep understanding on how this bundle works and what are the main parts
+to it, read [the docs](/src/Resources/docs/0.intro.md).
 
 ## Credits
 This bundle incorporates services definitions and code from these other bundles that
