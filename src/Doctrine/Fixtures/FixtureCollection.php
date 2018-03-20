@@ -102,11 +102,7 @@ class FixtureCollection implements FixtureCollectionInterface, \IteratorAggregat
     private function commitFetch($key = null)
     {
         if ($key === null) {
-            shuffle($this->elements);
-            $element = array_pop($this->elements);
-            $key = end(array_keys($this->elements));
-            $this->fetchedElements[$key] = $element;
-            ksort($this->elements);
+            $key = array_rand($this->elements);
         }
         $element = $this->elements[$key];
         $this->fetchedElements[$key] = $element;

@@ -57,9 +57,12 @@ class Fractalizer
     {
         $request = $this->requestStack->getCurrentRequest();
 
-//        if ($data instanceof QueryBuilder && $request->query->has('with')) {
-//            $data = $this->eagerLoadWith($data);
-//        }
+        if ($request->query->has('with')) {
+            $this->manager->parseIncludes($request->query->get('with'));
+            if ($data instanceof QueryBuilder) {
+                $data = $this->eagerLoadWith($data, $this->manager->getRequestedIncludes());
+            }
+        }
 
         if ($this->isPluralResponse($data)) {
 
@@ -68,13 +71,8 @@ class Fractalizer
 
             $resource = new Collection($results, $transformer, $resourceKey);
             $resource->setPaginator($paginator);
-            if ($request->query->has('with')) {
-                $this->manager->parseIncludes($request->query->get('with'));
-            }
+
         } else {
-            if ($request->query->has('with')) {
-                $this->manager->parseIncludes($request->query->get('with'));
-            }
             $resource = new Item($data, $transformer, $resourceKey);
         }
         return array_reverse($this->manager->createData($resource)->toArray(), true);
@@ -150,34 +148,22 @@ class Fractalizer
     /**
      * Checks the with query param and eager loads the relationships.
      * @param QueryBuilder $query
-     * @deprecated
+     * @param array        $includes
      * @return QueryBuilder
+     * TODO: Create a method to parse the includes
+     * The includes come in array like this:
+     *  - property1.subproperty1
+     *  - property1
+     *  - property2
+     * I should loop over.
      */
-    private function eagerLoadWith(QueryBuilder $query)
+    private function eagerLoadWith(QueryBuilder $query, array $includes)
     {
-        $request = $this->requestStack->getCurrentRequest();
-        $withs = explode(',', $request->query->get('with'));
-        $assoc = $query->getEntityManager()->getClassMetadata($request->attributes->get('_related_entity'))->getAssociationNames();
-        $root = $request->attributes->get('_resource_name');
-
-        foreach ($withs as $field) {
-            if (strpos('.', $field) !== false) {
-                $subrelations = explode('.', $field);
-                for ($i = 0; $i === sizeof($subrelations) - 1; $i++) {
-                    if ($i === 0) {
-                        $query->leftJoin($root.'.'.$subrelations[$i], $subrelations[$i]);
-                    } else {
-                        $query->leftJoin($subrelations[$i -1].'.'.$subrelations[$i], $subrelations[$i]);
-                    }
-                    $query->addSelect($subrelations[$i]);
-                }
-            } else {
-                if (in_array($field, $assoc)) {
-                    $query->leftJoin($root.'.'.$field, $field)
-                        ->addSelect($field);
-                }
-            }
+        $entities = $query->getRootEntities();
+        foreach ($entities as $entity) {
+            // Blank
         }
+        // Function that parses the includes
         return $query;
     }
 }

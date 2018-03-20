@@ -89,9 +89,9 @@ class EntityFactory implements EntityFactoryInterface
      * @param $callable
      * @return mixed
      */
-    private function applyCallback($callable, $object)
+    private function applyCallback($callable, &$object)
     {
-        call_user_func_array($callable, [$object]);
+        call_user_func_array($callable, [&$object]);
         return $object;
     }
 
