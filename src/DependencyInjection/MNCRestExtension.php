@@ -3,11 +3,15 @@
 namespace MNC\Bundle\RestBundle\DependencyInjection;
 
 use League\Fractal\TransformerAbstract;
+use MNC\Bundle\RestBundle\DependencyInjection\Compiler\DoctrineFilterCompilerPass;
 use MNC\Bundle\RestBundle\DependencyInjection\Compiler\EntityFactoryCompilerPass;
+use MNC\Bundle\RestBundle\DoctrineFilter\DoctrineFilterInterface;
 use MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionInterface;
+use MNC\Bundle\RestBundle\EventSubscriber\FilterSubscriber;
 use MNC\Bundle\RestBundle\Manager\AbstractResourceManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -37,6 +41,9 @@ class MNCRestExtension extends Extension
         $container->registerForAutoconfiguration(AbstractResourceManager::class)
             ->addTag('mnc_rest.resource_manager')
             ->setPublic(true);
+
+        $container->registerForAutoconfiguration(DoctrineFilterInterface::class)
+            ->addTag(DoctrineFilterCompilerPass::TAG);
 
         $container->registerForAutoconfiguration(FactoryDefinitionInterface::class)
             ->addTag(EntityFactoryCompilerPass::TAG);

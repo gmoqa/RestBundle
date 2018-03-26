@@ -10,11 +10,13 @@ use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
-use MNC\Bundle\RestBundle\Helper\RestInfoInterface;
+use MNC\Bundle\RestBundle\Event\PreFetchCollectionEvent;
+use MNC\Bundle\RestBundle\MNCRestBundleEvents;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -32,18 +34,28 @@ class Fractalizer
      * @var Manager
      */
     private $manager;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
 
     /**
      * Fractalizer constructor.
-     * @param RequestStack    $requestStack
-     * @param RouterInterface $router
-     * @param Manager         $manager
+     * @param RequestStack             $requestStack
+     * @param RouterInterface          $router
+     * @param Manager                  $manager
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(RequestStack $requestStack, RouterInterface $router, Manager $manager)
-    {
+    public function __construct(
+        RequestStack $requestStack,
+        RouterInterface $router,
+        Manager $manager,
+        EventDispatcherInterface $dispatcher
+    ) {
         $this->requestStack = $requestStack;
         $this->router = $router;
         $this->manager = $manager;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -66,6 +78,16 @@ class Fractalizer
 
         if ($this->isPluralResponse($data)) {
 
+            if ($data instanceof QueryBuilder) {
+                $event = $this->dispatcher
+                    ->dispatch(
+                        MNCRestBundleEvents::PRE_FETCH_COLLECTION,
+                        new PreFetchCollectionEvent($data, $request)
+                    );
+
+                $data = $event->getQuery();
+            }
+
             $paginator = $this->instantiatePaginator($data);
             $results = $paginator->getPaginator()->getCurrentPageResults();
 
@@ -75,7 +97,13 @@ class Fractalizer
         } else {
             $resource = new Item($data, $transformer, $resourceKey);
         }
-        return array_reverse($this->manager->createData($resource)->toArray(), true);
+
+        $array = array_reverse($this->manager->createData($resource)->toArray(), true);
+        if ($request->attributes->has('_filters')) {
+            $array['meta'] = array_merge($array['meta'], $request->attributes->get('_filters'));
+        }
+
+        return $array;
     }
 
     /**
@@ -99,7 +127,7 @@ class Fractalizer
             $params = $request->attributes->get('_route_params');
             $newParams = array_merge($params, $request->query->all());
             $newParams['page'] = $page;
-            return $router->generate($route, $newParams, 0);
+            return $router->generate($route, $newParams);
         });
 
         return $paginator;

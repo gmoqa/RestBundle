@@ -6,6 +6,10 @@ services:
             # if you need to do this, you can override this setting on individual services
             public: false
 
+    # UTILS
+    MNC\Bundle\RestBundle\Doctrine\Utils\QueryNameGenerator:
+        public: false
+
     # EVENT LISTENERS
     MNC\Bundle\RestBundle\EventListener\ApiExceptionListener:
         arguments: ['%kernel.environment%']
@@ -20,10 +24,24 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: -40 }
 
+    MNC\Bundle\RestBundle\EventSubscriber\DoctrineFilterSubscriber:
+        arguments:
+            - '@MNC\Bundle\RestBundle\Doctrine\Utils\QueryNameGenerator'
+        tags:
+            - { name: kernel.event_subscriber }
+
     # MAKERS
     MNC\Bundle\RestBundle\Maker\MakeResource:
         tags:
             - { name: maker.command }
+
+    # FILTERS
+    MNC\Bundle\RestBundle\DoctrineFilter\OrderFilter:
+        tags:
+            - mnc_rest.doctrine_filter
+    MNC\Bundle\RestBundle\DoctrineFilter\WhereFilter:
+        tags:
+            - mnc_rest.doctrine_filter
 
     # LIFORM
     liform.add_schema_extension:
@@ -66,6 +84,7 @@ services:
             - '@Symfony\Component\HttpFoundation\RequestStack'
             - '@router'
             - '@MNC\Bundle\RestBundle\Fractalizer\ContainerAwareManager'
+            - '@event_dispatcher'
         public: true
 
     MNC\Bundle\RestBundle\Fractalizer\ContainerAwareManager:

@@ -108,8 +108,7 @@ class ApiProblem implements ApiProblemInterface
         $this->status === null ?: $data['status'] = $this->status;
         $this->detail === null ?: $data['detail'] = $this->detail;
         $this->instance === null ?: $data['instance'] = $this->instance;
-        array_merge($data, $this->extra);
-        return $data;
+        return array_merge($data, $this->extra);
     }
 
     /**
@@ -201,9 +200,11 @@ class ApiProblem implements ApiProblemInterface
     /**
      * @param $key
      * @param $value
+     * @return ApiProblem
      */
     public function set($key, $value)
     {
         $this->extra[$key] = $value;
+        return $this;
     }
 }
