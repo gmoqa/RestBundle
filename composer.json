@@ -25,6 +25,11 @@
         "pagerfanta/pagerfanta": "^1.0",
         "league/fractal": "^0.17",
         "limenius/liform": "^0.12",
-        "fzaninotto/faker": "^1.7"
+        "fzaninotto/faker": "^1.7",
+        "mnavarrocarter/problem-details": "^0.1"
+    },
+    "suggest":
+    {
+        "mnavarrocarter/problem-details-bundle": "For automatic serialization of exceptions to RFC 7807 error representations."
     }
 }

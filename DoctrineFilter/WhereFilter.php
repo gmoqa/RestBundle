@@ -5,7 +5,7 @@ namespace MNC\Bundle\RestBundle\DoctrineFilter;
 use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
 use MNC\Bundle\RestBundle\Doctrine\Utils\QueryNameGeneratorInterface;
-use MNC\Bundle\RestBundle\Filter\FilterException;
+use MNC\Bundle\RestBundle\Exception\FilterException;
 use Symfony\Component\HttpFoundation\Request;
 
 class WhereFilter implements DoctrineFilterInterface

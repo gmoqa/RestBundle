@@ -2,8 +2,7 @@
 
 namespace MNC\Bundle\RestBundle\EventListener;
 
-use MNC\Bundle\RestBundle\ApiProblem\ApiError;
-use MNC\Bundle\RestBundle\ApiProblem\ApiProblem;
+use MNC\Bundle\RestBundle\Exception\BodyFormatException;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
@@ -15,6 +14,7 @@ class RequestBodyListener
 {
     /**
      * @param GetResponseEvent $event
+     * @throws BodyFormatException
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
@@ -28,8 +28,7 @@ class RequestBodyListener
 
         if (!$data) {
             $error = json_last_error_msg();
-            $apiProblem = ApiProblem::create(422, $error, ApiError::TYPE_INVALID_REQUEST_BODY_FORMAT);
-            $apiProblem->throwException();
+            throw BodyFormatException::malformedBody($error);
         }
 
         foreach ($data as $key => $value) {

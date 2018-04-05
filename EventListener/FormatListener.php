@@ -1,6 +1,7 @@
 <?php
 
 namespace MNC\Bundle\RestBundle\EventListener;
+
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**

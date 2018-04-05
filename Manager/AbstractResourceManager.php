@@ -5,7 +5,7 @@ namespace MNC\Bundle\RestBundle\Manager;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
-use MNC\Bundle\RestBundle\ApiProblem\ApiProblem;
+use MNC\Bundle\RestBundle\Exception\ResourceException;
 use MNC\Bundle\RestBundle\Security\OwnableInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -169,17 +169,17 @@ abstract class AbstractResourceManager implements ResourceManagerInterface
     {
         if (strpos($value, ',') !== false) {
             if ($justOne) {
-                throw ResourceManagerException::cannotShowMultipleResources();
+                throw ResourceException::cannotRequestMultipleResources();
             }
             $collection = $this->repository->findBy([$this->identifier => explode(',', $value)]);
             if (sizeof($collection) === 0) {
-                ApiProblem::create(404, sprintf('Resources %s not found', $value))->throwException();
+                throw ResourceException::resourcesNotFound($value);
             }
             return $collection;
         }
         $item = $this->repository->{'findOneBy'.ucfirst($this->identifier)}($value);
         if ($item === null) {
-            ApiProblem::create(404, sprintf('Resource %s not found', $value))->throwException();
+            throw ResourceException::resourceNotFound($value);
         }
         return $item;
     }

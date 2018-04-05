@@ -16,7 +16,6 @@ familiarize yourself with this readme.
 - Pagination at ORM level by `whiteoctober/pagerfanta`
 - Easily control access to your resources implementing `OwnableInterface`
 - Json Body Parser Listener
-- RFC 7807 Problem Details implementation for errors.
 - Resource Managers for cleaning your controllers.
 - Subresources route support
 

@@ -2,7 +2,6 @@
 
 namespace <?= $namespace; ?>;
 
-use MNC\Bundle\RestBundle\Doctrine\Fixtures\AdvancedFixture;
 use MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionInterface;
 use Faker\Generator;
 use <?= $entity_full_class_name; ?>;

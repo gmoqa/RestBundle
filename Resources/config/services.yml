@@ -11,11 +11,6 @@ services:
         public: false
 
     # EVENT LISTENERS
-    MNC\Bundle\RestBundle\EventListener\ApiExceptionListener:
-        arguments: ['%kernel.environment%']
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception }
-
     MNC\Bundle\RestBundle\EventListener\RequestBodyListener:
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: 150 }

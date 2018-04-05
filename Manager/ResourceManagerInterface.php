@@ -4,6 +4,7 @@ namespace MNC\Bundle\RestBundle\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\QueryBuilder;
+use MNC\Bundle\RestBundle\Exception\ResourceException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,7 +78,7 @@ interface ResourceManagerInterface extends ObjectManager
      * Shows a resource based on it's identifier.
      * @param      $value
      * @param bool $justOne
-     * @throws ResourceManagerException When asking multiple resources when just
+     * @throws ResourceException When asking multiple resources when just
      *                                  one option is enabled.
      * @return mixed
      */

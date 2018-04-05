@@ -3,9 +3,7 @@
 namespace MNC\Bundle\RestBundle\Controller;
 
 use League\Fractal\TransformerAbstract;
-use MNC\Bundle\RestBundle\ApiProblem\ApiError;
-use MNC\Bundle\RestBundle\ApiProblem\ApiProblem;
-use MNC\Bundle\RestBundle\ApiProblem\ApiProblemException;
+use MNC\Bundle\RestBundle\Exception\FormValidationException;
 use MNC\Bundle\RestBundle\Fractalizer\Fractalizer;
 use MNC\Bundle\RestBundle\Helper\RouteActionVerb;
 use MNC\Bundle\RestBundle\Security\ProtectedResourceInterface;
@@ -14,7 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
@@ -57,13 +54,12 @@ abstract class RestController extends Controller
 
     /**
      * @param FormInterface $form
-     * @return ApiProblemException
+     * @return FormValidationException
      */
     protected function createValidationErrorException(FormInterface $form)
     {
         $normalizedForm = $this->get('serializer')->normalize($form);
-        $apiProblem = ApiProblem::create(400, $normalizedForm['errors'], ApiError::TYPE_VALIDATION_ERROR);
-        return $apiProblem->toException();
+        return FormValidationException::create($normalizedForm['errors']);
     }
 
     /**
