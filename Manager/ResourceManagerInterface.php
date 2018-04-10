@@ -2,8 +2,10 @@
 
 namespace MNC\Bundle\RestBundle\Manager;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\QueryBuilder;
+use League\Fractal\TransformerAbstract;
 use MNC\Bundle\RestBundle\Exception\ResourceException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -45,6 +47,11 @@ interface ResourceManagerInterface extends ObjectManager
     public function getTransformerClass();
 
     /**
+     * @return TransformerAbstract
+     */
+    public function getTransformer();
+
+    /**
      * @return string
      */
     public function getIdentifier();
@@ -83,4 +90,26 @@ interface ResourceManagerInterface extends ObjectManager
      * @return mixed
      */
     public function showResource($value, bool $justOne = false);
+
+    /**
+     * @param $id
+     * @return ResourceManagerInterface|null
+     */
+    public function getResourceManager($id);
+
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function resourceManagerExists($id);
+
+    /**
+     * @return ManagerRegistry
+     */
+    public function getDoctrine();
+
+    /**
+     * @return ObjectManager
+     */
+    public function getManager();
 }

@@ -7,11 +7,11 @@ use MNC\Bundle\RestBundle\DependencyInjection\Compiler\DoctrineFilterCompilerPas
 use MNC\Bundle\RestBundle\DependencyInjection\Compiler\EntityFactoryCompilerPass;
 use MNC\Bundle\RestBundle\DoctrineFilter\DoctrineFilterInterface;
 use MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionInterface;
-use MNC\Bundle\RestBundle\EventSubscriber\FilterSubscriber;
 use MNC\Bundle\RestBundle\Manager\AbstractResourceManager;
+use MNC\Bundle\RestBundle\Manager\ResourceManagerFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -39,6 +39,7 @@ class MNCRestExtension extends Extension
             ->setPublic(true);
 
         $container->registerForAutoconfiguration(AbstractResourceManager::class)
+            ->setParent(AbstractResourceManager::class)
             ->addTag('mnc_rest.resource_manager')
             ->setPublic(true);
 

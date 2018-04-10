@@ -94,3 +94,17 @@ services:
 
     MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionLoader:
         public: false
+
+    MNC\Bundle\RestBundle\Manager\ResourceManagerFactory:
+        public: true
+
+    MNC\Bundle\RestBundle\Manager\ResourceManagerFactoryInterface:
+        alias: MNC\Bundle\RestBundle\Manager\ResourceManagerFactory
+        public: true
+
+    MNC\Bundle\RestBundle\Manager\AbstractResourceManager:
+        abstract: true
+        public: false
+        arguments:
+            - '@service_container'
+            - '@Symfony\Component\Form\FormFactoryInterface'

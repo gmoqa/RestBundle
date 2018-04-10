@@ -8,8 +8,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use MNC\Bundle\RestBundle\Manager\ResourceManagerException;
 use MNC\Bundle\RestBundle\Security\ProtectedResourceVoter;
+use MNC\Bundle\RestBundle\Exception\ResourceException;
 
 /**
  * @Route("/<?= $resource_name_plural; ?>")
@@ -97,7 +97,7 @@ class <?= $class_name; ?> extends RestController
      * @param <?= $manager_class_name; ?> $manager
      * @param               $id
      * @return Response
-     * @throws ResourceManagerException
+     * @throws ResourceException
      */
     public function editAction(Request $request, <?= $manager_class_name; ?> $manager, $id)
     {
@@ -145,7 +145,7 @@ class <?= $class_name; ?> extends RestController
      * @param <?= $manager_class_name; ?> $manager
      * @param               $id
      * @return Response
-     * @throws ResourceManagerException
+     * @throws ResourceException
      */
     public function deleteAction(Request $request, <?= $manager_class_name; ?> $manager, $id)
     {

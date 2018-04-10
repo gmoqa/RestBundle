@@ -112,12 +112,12 @@ final class MakeResource extends AbstractMaker
             $managerClassDetails->getFullName(),
             __DIR__.'/../Resources/skeleton/rest/ResourceManager.tpl.php',
             [
-                'repository_full_class_name' => $repositoryClassDetails->getFullName(),
                 'transformer_full_class_name' => $transformerClassDetails->getFullName(),
                 'transformer_class_name' => $transformerClassDetails->getShortName(),
                 'form_full_class_name' => $formClassDetails->getFullName(),
                 'form_class_name' => $formClassDetails->getShortName(),
-                'repository_class_name' => $repositoryClassDetails->getShortName(),
+                'entity_full_class_name' => $entityClassDetails->getFullName(),
+                'entity_class_name' => $entityClassDetails->getShortName(),
                 'entity_alias' => $qbAlias,
             ]
         );
