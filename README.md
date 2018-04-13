@@ -1,6 +1,9 @@
 MNC RestBundle
 ==============
-Provides some utilties to rapidly build Restful API's.
+Provides some utilties to rapidly build Restful API's in Symfony.
+
+[![Code Climate](https://codeclimate.com/github/mnavarrocarter/RestBundle/badges/gpa.svg)](https://codeclimate.com/github/mnavarrocarter/RestBundle)
+[![TestCoverage](https://codeclimate.com/github/mnavarrocarter/RestBundle/badges/coverage.svg)](https://codeclimate.com/github/mnavarrocarter/RestBundle)
 
 > This bundle is only compatible with Symfony 4. We are working to make it compatible
 for other LTS versions of Symfony.
@@ -11,7 +14,6 @@ familiarize yourself with this readme.
 ## Features:
 - Create RESTful endpoints in seconds with our awesome RestController
 - Transformation/Serialization layer by `league/fractal`
-- Json-Schema forms by `limenius/liform`
 - Eager Load selectable Hydration
 - Pagination at ORM level by `whiteoctober/pagerfanta`
 - Easily control access to your resources implementing `OwnableInterface`

@@ -1,11 +1,4 @@
 services:
-    _defaults:
-            # automatically injects dependencies in your services
-            autowire: true
-            # this means you cannot fetch services directly from the container via $container->get()
-            # if you need to do this, you can override this setting on individual services
-            public: false
-
     # UTILS
     MNC\Bundle\RestBundle\Doctrine\Utils\QueryNameGenerator:
         public: false
@@ -25,11 +18,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    # MAKERS
-    MNC\Bundle\RestBundle\Maker\MakeResource:
-        tags:
-            - { name: maker.command }
-
     # FILTERS
     MNC\Bundle\RestBundle\DoctrineFilter\OrderFilter:
         tags:
@@ -37,36 +25,6 @@ services:
     MNC\Bundle\RestBundle\DoctrineFilter\WhereFilter:
         tags:
             - mnc_rest.doctrine_filter
-
-    # LIFORM
-    liform.add_schema_extension:
-        class: Limenius\Liform\Form\Extension\AddLiformExtension
-        tags:
-            - { name: form.type_extension, extended_type: '@Symfony\Component\Form\Extension\Core\Type\FormType' }
-
-    liform.serializer.form_error_normalizer:
-        class: Limenius\Liform\Serializer\Normalizer\FormErrorNormalizer
-        arguments: ['@translator.data_collector']
-        tags:
-            - { name: serializer.normalizer, priority: -10 }
-
-    liform.serializer.initial_values_normalizer:
-        class: Limenius\Liform\Serializer\Normalizer\InitialValuesNormalizer
-        tags:
-            - { name: serializer.normalizer, priority: -10 }
-
-    liform.resolver:
-        class: Limenius\Liform\Resolver
-        public: true
-
-    liform:
-        class: Limenius\Liform\Liform
-        public: true
-        arguments: ['@liform.resolver']
-
-    liform.guesser.validator:
-        class: Limenius\Liform\Guesser\ValidatorGuesser
-        arguments: ['@validator.mapping.class_metadata_factory']
 
     # VOTERS
     MNC\Bundle\RestBundle\Security\ProtectedResourceVoter:
@@ -80,6 +38,7 @@ services:
             - '@router'
             - '@MNC\Bundle\RestBundle\Fractalizer\ContainerAwareManager'
             - '@event_dispatcher'
+            - '@MNC\Bundle\RestBundle\Manager\QueryParser'
         public: true
 
     MNC\Bundle\RestBundle\Fractalizer\ContainerAwareManager:
@@ -88,7 +47,9 @@ services:
             - [setContainer, ['@service_container']]
 
     MNC\Bundle\RestBundle\EntityFactory\EntityFactory:
-        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        arguments:
+            - '@Doctrine\ORM\EntityManagerInterface'
+            - '@MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionLoader'
         calls:
             - [loadDefinitions, []]
 
@@ -105,6 +66,46 @@ services:
     MNC\Bundle\RestBundle\Manager\AbstractResourceManager:
         abstract: true
         public: false
-        arguments:
-            - '@service_container'
-            - '@Symfony\Component\Form\FormFactoryInterface'
+        arguments: ['@service_container']
+
+    MNC\Bundle\RestBundle\Serializer\FormErrorNormalizer:
+        arguments: ['@translator.default']
+        tags:
+            - { name: serializer.normalizer }
+
+    mnc_rest.form_error_normalizer:
+        alias: MNC\Bundle\RestBundle\Serializer\FormErrorNormalizer
+        public: true
+
+    MNC\Bundle\RestBundle\Manager\QueryParser:
+        public: true
+        arguments: ['@request_stack']
+
+    MNC\Bundle\RestBundle\Command\CreateResourceSetCommand:
+        tags:
+            - { name: console.command }
+
+    MNC\Bundle\RestBundle\Maker\MakeTransformer:
+        arguments: ['@maker.doctrine_entity_helper']
+        tags:
+            - { name: maker.command }
+
+    MNC\Bundle\RestBundle\Maker\MakeManager:
+        arguments: ['@maker.doctrine_entity_helper']
+        tags:
+            - { name: maker.command }
+
+    MNC\Bundle\RestBundle\Maker\MakeEntityFactory:
+        arguments: ['@maker.doctrine_entity_helper']
+        tags:
+            - { name: maker.command }
+
+    MNC\Bundle\RestBundle\Maker\MakeAdvancedFixture:
+        arguments: ['@maker.doctrine_entity_helper']
+        tags:
+            - { name: maker.command }
+
+    MNC\Bundle\RestBundle\Maker\MakeRestController:
+        arguments: ['@maker.doctrine_entity_helper']
+        tags:
+            - { name: maker.command }

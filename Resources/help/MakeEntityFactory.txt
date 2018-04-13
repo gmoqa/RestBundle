@@ -1,0 +1,5 @@
+The <info>%command.name%</info> command generates a new entity factory.
+
+<info>php %command.full_name% entity</info>
+
+If the argument is missing, the command will ask for the entity name interactively.

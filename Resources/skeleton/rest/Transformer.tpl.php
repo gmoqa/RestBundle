@@ -7,7 +7,7 @@ use <?= $entity_full_class_name ?>;
 
 class <?= $class_name ?> extends TransformerAbstract
 {
-    protected $availableIncludes = [];
+    protected $availableIncludes = [<?= $available_includes ;?>];
 
     protected $defaultIncludes = [];
 
@@ -15,11 +15,18 @@ class <?= $class_name ?> extends TransformerAbstract
 
     public function transform(<?= $entity_class_name ?> $<?= $resource_name ?>)
     {
-        return [
-            'id' => $<?= $resource_name ?>->getId(),
-        ];
+    <?php foreach ($props as $prop) :?>
+    <?= $prop?>
+    <?php endforeach;?>
+    return $array;
     }
 
-    // Custom includes here
+    <?php foreach ($singles as $single):?>
+    <?= $single ?>
+    <?php endforeach;?>
+
+    <?php foreach ($collections as $collection):?>
+        <?= $collection ?>
+    <?php endforeach;?>
 
 }

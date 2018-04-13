@@ -8,10 +8,8 @@ use MNC\Bundle\RestBundle\DependencyInjection\Compiler\EntityFactoryCompilerPass
 use MNC\Bundle\RestBundle\DoctrineFilter\DoctrineFilterInterface;
 use MNC\Bundle\RestBundle\EntityFactory\FactoryDefinitionInterface;
 use MNC\Bundle\RestBundle\Manager\AbstractResourceManager;
-use MNC\Bundle\RestBundle\Manager\ResourceManagerFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -32,7 +30,6 @@ class MNCRestExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
-        $loader->load('liform_transformers.yml');
 
         $container->registerForAutoconfiguration(TransformerAbstract::class)
             ->addTag('mnc_rest.transformer')

@@ -21,8 +21,9 @@ class <?= $class_name; ?> implements FactoryDefinitionInterface
      */
     public function getData(Generator $faker) : array
     {
-        return [
-            //'name' => $faker->name
-        ];
+    <?php foreach ($lines as $line) :?>
+    <?= $line ;?>
+    <?php endforeach;?>
+    return $data;
     }
 }

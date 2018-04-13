@@ -2,71 +2,226 @@
 
 namespace MNC\Bundle\RestBundle\Manager;
 
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
 use League\Fractal\TransformerAbstract;
-use MNC\Bundle\RestBundle\Exception\ResourceException;
 use MNC\Bundle\RestBundle\Security\OwnableInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * This class is a base class for a resource Manager. It wraps Doctrine's Entity
- * Manager inside it, and also creates some common operations for objects.
  * @package MNC\Bundle\RestBundle\Manager
  * @author Matías Navarro Carter <mnavarro@option.cl>
  */
 abstract class AbstractResourceManager implements ResourceManagerInterface
 {
-    use EntityManagerWrapperTrait;
-
-    /**
-     * @var string
-     */
-    protected $entityClass;
-    /**
-     * @var string
-     */
-    protected $formClass;
-    /**
-     * @var string
-     */
-    protected $transformerClass;
-    /**
-     * @var string
-     */
-    protected $identifier;
     /**
      * @var ContainerInterface
      */
     private $container;
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
 
     /**
      * AbstractResourceManager constructor.
-     * @param ContainerInterface   $container
-     * @param FormFactoryInterface $formFactory
+     * @param ContainerInterface $container
      */
-    public function __construct(
-        ContainerInterface $container,
-        FormFactoryInterface $formFactory
-    ) {
+    public function __construct(ContainerInterface $container)
+    {
         $this->container = $container;
-        $this->formFactory = $formFactory;
+    }
+
+    /**
+     * Returns the Doctrine Registry.
+     * @return ManagerRegistry
+     */
+    public function getDoctrine()
+    {
+        return $this->container->get('doctrine');
+    }
+
+    /**
+     * Returns the ObjectManager for this class.
+     * @return ObjectManager
+     */
+    public function getManager()
+    {
+        return $this->getDoctrine()->getManagerForClass($this->getEntityClass());
+    }
+
+    /**
+     * Returns this manager's class repository.
+     * @return \Doctrine\Common\Persistence\ObjectRepository
+     */
+    public function getRepository()
+    {
+        return $this->getManager()->getRepository($this->getEntityClass());
+    }
+
+     /**
+      * Finds an object by its configured identifier.
+      * @param $identifier
+      * @return object
+      */
+    public function find($identifier)
+    {
+        $identifier = explode(',', $identifier);
+        if (sizeof($identifier) === 1) {
+            return $this->findOne($identifier[0]);
+        }
+        return $this->findMany($identifier);
+    }
+
+    /**
+     * Finds a single object
+     * @param $identifier
+     * @return mixed
+     */
+    public function findOne($identifier)
+    {
+        return $this->getRepository()->findOneBy([$this->getIdentifier() => $identifier]);
+    }
+
+    /**
+      * @param array $identifiers
+      * @return null
+      */
+    public function findMany(array $identifiers)
+    {
+        return $this->getRepository()->findBy([$this->getIdentifier() => $identifiers]);
+    }
+
+    /**
+     * @param array $criteria
+     * @return array
+     */
+    public function findCollectionBy(array $criteria = [])
+    {
+        /** @var QueryParser $parser */
+        $parser = $this->get(QueryParser::class);
+        return $this
+            ->getRepository()
+            ->findBy(
+                $criteria,
+                $parser->getOrderBy(),
+                $parser->getLimit(),
+                $parser->getOffset()
+            );
+    }
+
+    /**
+     * @param $object
+     * @return void
+     */
+    public function persist($object)
+    {
+        $this->getManager()->persist($object);
+    }
+
+     /**
+      * @param object $object
+      * @return void
+      */
+    public function remove($object)
+    {
+        $this->getManager()->remove($object);
+    }
+
+    /**
+     * @return void
+     */
+    public function flush()
+    {
+        $this->getManager()->flush();
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\Mapping\ClassMetadata
+     */
+    public function getClassMetadata()
+    {
+        return $this->getManager()->getClassMetadata($this->getEntityClass());
+    }
+
+    /**
+     * @param object $object
+     * @return object
+     */
+    public function merge(object $object)
+    {
+        return $this->getManager()->merge($object);
+    }
+
+    /**
+     * @param object $object
+     * @return bool
+     */
+    public function contains(object $object)
+    {
+        return $this->getManager()->contains($object);
+    }
+
+    /**
+     * @param bool $onlyThese
+     * @return void
+     */
+    public function clear($onlyThese = true)
+    {
+        if ($onlyThese) {
+            $this->getManager()->clear($this->getEntityClass());
+        }
+        $this->getManager()->clear($this->getEntityClass());
+    }
+
+    /**
+     * @param object $object
+     */
+    public function detach(object $object)
+    {
+        $this->getManager()->detach($object);
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\Mapping\ClassMetadataFactory
+     */
+    public function getMetadataFactory()
+    {
+        return $this->getManager()->getMetadataFactory();
+    }
+
+    /**
+     * @param object $object
+     * @return void
+     */
+    public function initializeObject(object $object)
+    {
+        $this->getManager()->initializeObject($object);
+    }
+
+    /**
+     * @param object $object
+     * @return void
+     */
+    public function refresh(object $object)
+    {
+        $this->getManager()->refresh($object);
     }
 
     /**
      * @inheritdoc
      */
-    public function create()
+    public function newElement(array $props = [])
     {
-        return new $this->entityClass;
+        $className = $this->getEntityClass();
+        $instance = new $className();
+        if (!empty($props)) {
+            $pa = PropertyAccess::createPropertyAccessor();
+            foreach ($props as $name => $value) {
+                $pa->setValue($instance, $name, $value);
+            }
+        }
+        return $instance;
     }
 
     /**
@@ -74,56 +229,7 @@ abstract class AbstractResourceManager implements ResourceManagerInterface
      */
     public function getFormFactory() : FormFactoryInterface
     {
-        return $this->formFactory;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getEntityManager() : ObjectManager
-    {
-        return $this->getManager();
-    }
-
-    /**
-     * This method overrides the Entity Manager Method for getting a repository.
-     * @param null $className
-     * @return ServiceEntityRepository|\Doctrine\Common\Persistence\ObjectRepository
-     */
-    public function getRepository($className = null)
-    {
-        if (!$className) {
-            $className = $this->entityClass;
-        }
-        return $this->getManager()->getRepository($className);
-    }
-
-    /**
-     * @param null $className
-     * @return ServiceEntityRepository|\Doctrine\Common\Persistence\Mapping\ClassMetadata|\Doctrine\Common\Persistence\ObjectRepository
-     */
-    public function getClassMetadata($className = null)
-    {
-        if (!$className) {
-            $className = $this->entityClass;
-        }
-        return $this->getManager()->getRepository($className);
-    }
-
-    /**
-     * @return string
-     */
-    public function getEntityClass()
-    {
-        return $this->entityClass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTransformerClass()
-    {
-        return $this->transformerClass;
+        return $this->get('form.factory');
     }
 
     /**
@@ -131,15 +237,7 @@ abstract class AbstractResourceManager implements ResourceManagerInterface
      */
     public function getTransformer()
     {
-        return $this->container->get($this->transformerClass);
-    }
-
-    /**
-     * @return string
-     */
-    public function getIdentifier()
-    {
-        return $this->identifier;
+        return $this->container->get($this->getTransformerClass());
     }
 
     /**
@@ -150,15 +248,19 @@ abstract class AbstractResourceManager implements ResourceManagerInterface
         $groups = ['Default'];
         if ($entity === null) {
             $groups[] = 'New';
-            $entity = $this->create();
+            $entity = $this->newElement();
         } else {
             $groups[] = 'Edit';
         }
 
-        $form = $this->getFormFactory()->create($this->formClass, $entity, [
-            'validation_groups' => $groups,
-            'csrf_protection' => false
-        ]);
+        $form = $this->getFormFactory()
+            ->create(
+                $this->getFormClass(),
+                $entity, [
+                    'validation_groups' => $groups,
+                    'csrf_protection' => false
+                ]
+            );
 
         return $form;
     }
@@ -187,28 +289,6 @@ abstract class AbstractResourceManager implements ResourceManagerInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    public function showResource($value, bool $justOne = false)
-    {
-        if (strpos($value, ',') !== false) {
-            if ($justOne) {
-                throw ResourceException::cannotRequestMultipleResources();
-            }
-            $collection = $this->getRepository()->findBy([$this->identifier => explode(',', $value)]);
-            if (sizeof($collection) === 0) {
-                throw ResourceException::resourcesNotFound($value);
-            }
-            return $collection;
-        }
-        $item = $this->getRepository()->{'findOneBy'.ucfirst($this->identifier)}($value);
-        if ($item === null) {
-            throw ResourceException::resourceNotFound($value);
-        }
-        return $item;
-    }
-
-    /**
      * @param $id
      * @return ResourceManagerInterface|null
      */
@@ -231,18 +311,28 @@ abstract class AbstractResourceManager implements ResourceManagerInterface
     }
 
     /**
-     * @return ManagerRegistry
+     * @param $id
+     * @return object
      */
-    public function getDoctrine()
+    public function get($id)
     {
-        return $this->container->get('doctrine');
+        return $this->container->get($id);
     }
 
     /**
-     * @return ObjectManager|null
+     * @param string $name
+     * @return mixed
      */
-    public function getManager()
+    public function getParameter(string $name)
     {
-        return $this->getDoctrine()->getManagerForClass($this->entityClass);
+        return $this->container->getParameter($name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return 'id';
     }
 }

@@ -21,35 +21,12 @@ class ResourceException extends ApiException
     }
 
     /**
-     * @return ResourceException
-     */
-    public static function cannotRequestMultipleResources()
-    {
-        return new self(
-            'This endpoint/method does not support referencing multiple comma separated resources.'
-        );
-    }
-
-    /**
-     * @param $resource
      * @return \MNC\ProblemDetails\ApiExceptionInterface
      */
-    public static function resourcesNotFound($resource)
+    public static function noResultsFound()
     {
         $instance  = new self(
-            sprintf('Resources %s not found', $resource)
-        );
-        return $instance->setStatusCode(404);
-    }
-
-    /**
-     * @param $resource
-     * @return \MNC\ProblemDetails\ApiExceptionInterface
-     */
-    public static function resourceNotFound($resource)
-    {
-        $instance  = new self(
-            sprintf('Resource %s not found', $resource)
+            sprintf('No results could be found.')
         );
         return $instance->setStatusCode(404);
     }

@@ -58,7 +58,7 @@ abstract class RestController extends Controller
      */
     protected function createValidationErrorException(FormInterface $form)
     {
-        $normalizedForm = $this->get('serializer')->normalize($form);
+        $normalizedForm = $this->get('mnc_rest.form_error_normalizer')->normalize($form);
         return FormValidationException::create($normalizedForm['errors']);
     }
 
@@ -85,7 +85,6 @@ abstract class RestController extends Controller
         /** @var TransformerAbstract $transformer */
         $transformer = $this->get($transformerClass);
         $array = $this->fractalize($data, $transformer);
-
         return JsonResponse::create($array, $statusCode, $headers);
     }
 

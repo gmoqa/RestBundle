@@ -1,0 +1,5 @@
+The <info>%command.name%</info> command generates a new Transformer.
+
+<info>php %command.full_name% post</info>
+
+If the argument is missing, the command will ask for the bound class name interactively.

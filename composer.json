@@ -20,16 +20,15 @@
         "symfony/validator": "^4.0",
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "symfony/orm-pack": "^1.0",
-        "symfony/profiler-pack": "^1.0",
-        "symfony/maker-bundle": "^1.1",
         "pagerfanta/pagerfanta": "^1.0",
         "league/fractal": "^0.17",
-        "limenius/liform": "^0.12",
         "fzaninotto/faker": "^1.7",
         "mnavarrocarter/problem-details": "^0.1"
     },
     "suggest":
     {
-        "mnavarrocarter/problem-details-bundle": "For automatic serialization of exceptions to RFC 7807 error representations."
+        "mnavarrocarter/problem-details-bundle": "For automatic serialization of exceptions to RFC 7807 error representations.",
+        "limenius/liform-bundle": "For conversion of forms to Json-Schema",
+        "symfony/maker-bundle": "For easy code generation tools."
     }
 }

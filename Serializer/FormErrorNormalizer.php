@@ -9,16 +9,25 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Normalizes invalid Form instances.
- *
+ * Taken from FOSRestBundle
  * @author Ener-Getick <egetick@gmail.com>
  */
 class FormErrorNormalizer implements NormalizerInterface
 {
+    /**
+     * @var TranslatorInterface
+     */
     private $translator;
+
+    /**
+     * FormErrorNormalizer constructor.
+     * @param TranslatorInterface $translator
+     */
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
+
     /**
      * {@inheritdoc}
      */

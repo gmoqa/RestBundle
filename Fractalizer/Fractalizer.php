@@ -11,6 +11,8 @@ use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 use MNC\Bundle\RestBundle\Event\PreFetchCollectionEvent;
+use MNC\Bundle\RestBundle\Exception\ResourceException;
+use MNC\Bundle\RestBundle\Manager\QueryParser;
 use MNC\Bundle\RestBundle\MNCRestBundleEvents;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
@@ -38,6 +40,10 @@ class Fractalizer
      * @var EventDispatcherInterface
      */
     private $dispatcher;
+    /**
+     * @var QueryParser
+     */
+    private $queryParser;
 
     /**
      * Fractalizer constructor.
@@ -45,17 +51,20 @@ class Fractalizer
      * @param RouterInterface          $router
      * @param Manager                  $manager
      * @param EventDispatcherInterface $dispatcher
+     * @param QueryParser              $queryParser
      */
     public function __construct(
         RequestStack $requestStack,
         RouterInterface $router,
         Manager $manager,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        QueryParser $queryParser
     ) {
         $this->requestStack = $requestStack;
         $this->router = $router;
         $this->manager = $manager;
         $this->dispatcher = $dispatcher;
+        $this->queryParser = $queryParser;
     }
 
     /**
@@ -67,6 +76,10 @@ class Fractalizer
      */
     public function fractalize($data, TransformerAbstract $transformer, $resourceKey = null)
     {
+        if (empty($data)) {
+            throw ResourceException::noResultsFound();
+        }
+
         $request = $this->requestStack->getCurrentRequest();
 
         if ($request->query->has('with')) {
@@ -119,8 +132,8 @@ class Fractalizer
 
         $adapter = $this->instantiateAdapter($data);
         $pagerfanta = new Pagerfanta($adapter);
-        $pagerfanta->setMaxPerPage($request->query->getInt('size') ?: 10);
-        $pagerfanta->setCurrentPage($request->query->getInt('page') ?: 1);
+        $pagerfanta->setMaxPerPage($this->queryParser->getSize());
+        $pagerfanta->setCurrentPage($this->queryParser->getPage());
 
         $paginator = new PagerfantaPaginatorAdapter($pagerfanta, function($page) use ($request, $router) {
             $route = $request->attributes->get('_route');
