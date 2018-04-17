@@ -10,7 +10,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "MNC\\Bundle\\RestBundle\\": "src"
+            "MNC\\Bundle\\RestBundle\\": ""
         }
     },
     "require": {
