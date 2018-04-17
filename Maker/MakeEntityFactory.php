@@ -37,7 +37,7 @@ final class MakeEntityFactory extends AbstractMaker
 
     public static function getCommandName(): string
     {
-        return 'make:rest-controller';
+        return 'make:entity-factory';
     }
 
     public function configureCommand(Command $command, InputConfiguration $inputConfig)

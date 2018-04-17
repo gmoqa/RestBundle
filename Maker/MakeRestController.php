@@ -41,7 +41,7 @@ final class MakeRestController extends AbstractMaker
      */
     public static function getCommandName(): string
     {
-        return 'make:advanced-fixture';
+        return 'make:rest-controller';
     }
 
     /**
@@ -82,7 +82,7 @@ final class MakeRestController extends AbstractMaker
      */
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-        $entityName = $input->getArgument('resource-name');
+        $entityName = $input->getArgument('bound-class');
 
         $entityClassDetails = $generator->createClassNameDetails(
             $entityName,

@@ -2,7 +2,7 @@
 
 namespace <?= $namespace; ?>;
 
-use <?= $manager_full_class_name?>
+use <?= $manager_full_class_name?>;
 use MNC\Bundle\RestBundle\Controller\RestController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
