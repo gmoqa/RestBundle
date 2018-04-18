@@ -78,8 +78,8 @@ abstract class RestController extends Controller
             return new Response(null, 204, $headers);
         }
 
-        if ($data === null) {
-            return new JsonResponse(null, 204);
+        if (empty($data)) {
+            return new JsonResponse(['data' => []], 200);
         }
 
         /** @var TransformerAbstract $transformer */
