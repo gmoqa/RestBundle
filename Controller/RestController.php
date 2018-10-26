@@ -11,6 +11,7 @@ use MNC\Bundle\RestBundle\Security\ProtectedResourceVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -78,8 +79,24 @@ abstract class RestController extends Controller
             return new Response(null, 204, $headers);
         }
 
+        /** @var RequestStack $requestStack */
+        $requestStack = $this->get(RequestStack::class);
+        $size = $requestStack->getCurrentRequest()->query->getInt('size', 10);
+        $page = $requestStack->getCurrentRequest()->query->getInt('page', 1);
+
         if (empty($data)) {
-            return new JsonResponse(['data' => []], 200);
+            return new JsonResponse([
+                'data' => [],
+                'meta' => [
+                    'pagination' => [
+                        'total' => 0,
+                        'count' => 0,
+                        'per_page' => $size,
+                        'current_page' => $page,
+                        'total_pages' => 1
+                    ]
+                ]
+            ], 200);
         }
 
         /** @var TransformerAbstract $transformer */
