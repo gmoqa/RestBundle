@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * This controller serves as a base controller for Rapid Api development. To
@@ -26,6 +27,21 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 abstract class RestController extends Controller
 {
     /**
+     * @var RequestStack
+     */
+    private $stack;
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    public function __construct(RequestStack $stack, RouterInterface $router)
+    {
+        $this->stack = $stack;
+        $this->router = $router;
+    }
+
+    /**
      * Build an absolute route to include in the location header.
      * @param      $entity
      * @param null $route
@@ -35,8 +51,7 @@ abstract class RestController extends Controller
     protected function createResourceUrl($entity, $route, $identifier)
     {
         $pa = PropertyAccess::createPropertyAccessor();
-        $router = $this->get('router');
-        return $router->generate($route, ['id' => $pa->getValue($entity, $identifier)], 0);
+        return $this->router->generate($route, ['id' => $pa->getValue($entity, $identifier)], 0);
     }
 
     /**
@@ -47,7 +62,7 @@ abstract class RestController extends Controller
     protected function denyAccessUnlessGranted($attributes, $subject = null, string $message = 'Access Denied.')
     {
         if (!$this->isGranted($attributes, $subject)) {
-            $request = $this->get('request_stack')->getCurrentRequest();
+            $request = $this->stack->getCurrentRequest();
             $message = sprintf('You do not have permissions to %s the requested resource', RouteActionVerb::findVerb($request->attributes->get('_route')));
             throw $this->createAccessDeniedException($message);
         }
@@ -79,10 +94,8 @@ abstract class RestController extends Controller
             return new Response(null, 204, $headers);
         }
 
-        /** @var RequestStack $requestStack */
-        $requestStack = $this->get(RequestStack::class);
-        $size = $requestStack->getCurrentRequest()->query->getInt('size', 10);
-        $page = $requestStack->getCurrentRequest()->query->getInt('page', 1);
+        $size = $this->stack->getCurrentRequest()->query->getInt('size', 10);
+        $page = $this->stack->getCurrentRequest()->query->getInt('page', 1);
 
         if (empty($data)) {
             return new JsonResponse([
